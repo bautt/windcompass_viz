@@ -195,7 +195,7 @@ function generateVisualizationsConf(vizs) {
 }
 
 function generateDefaultMeta(vizs) {
-    const globalStanza = '[]\naccess = read : [ * ], write : [ admin, power ]';
+    const globalStanza = '[]\naccess = read : [ * ], write : [ admin, sc_admin, power ]';
     if (vizs.length === 0) return globalStanza;
     const vizStanzas = vizs.map((viz) => `[visualizations/${viz.name}]\nexport = system`).join('\n\n');
     return `${globalStanza}\n\n${vizStanzas}`;
