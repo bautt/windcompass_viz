@@ -1,6 +1,6 @@
 {
   "name": "windcompass",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Animated wind compass visualization for Splunk Dashboard Studio 10.4+",
   "author": "Tomas Baublys",
   "type": "module",

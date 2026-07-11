@@ -53,21 +53,21 @@
   "dataSources": {
     "ds_berlin": {
       "type": "ds.search",
-      "name": "Berlin (sample)",
+      "name": "Berlin sample",
       "options": {
         "query": "| makeresults\n| eval city=\"Berlin\", country=\"Germany\", wind_direction_10m=225, wind_speed_10m=18.5, temperature_2m=12.0\n| fields city country wind_direction_10m wind_speed_10m temperature_2m"
       }
     },
     "ds_vilnius": {
       "type": "ds.search",
-      "name": "Vilnius (sample)",
+      "name": "Vilnius sample",
       "options": {
         "query": "| makeresults\n| eval city=\"Vilnius\", country=\"Lithuania\", wind_direction_10m=315, wind_speed_10m=11.2, temperature_2m=8.5\n| fields city country wind_direction_10m wind_speed_10m temperature_2m"
       }
     },
     "ds_sanfrancisco": {
       "type": "ds.search",
-      "name": "San Francisco (sample)",
+      "name": "San Francisco sample",
       "options": {
         "query": "| makeresults\n| eval city=\"San Francisco\", country=\"United States\", wind_direction_10m=270, wind_speed_10m=22.0, temperature_2m=16.5\n| fields city country wind_direction_10m wind_speed_10m temperature_2m"
       }

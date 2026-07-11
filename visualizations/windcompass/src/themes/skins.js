@@ -3,6 +3,8 @@
 export const SKINS = {
     clean: {
         // Fully transparent/minimal — user colors drive everything via the editor pickers.
+        trueNeedleType: 'clean',
+        apparentNeedleType: 'slim',
         showBezel: false,
         bezelWidth: 0,
         majorTickEvery: 30,
@@ -44,6 +46,8 @@ export const SKINS = {
         },
     },
     marine: {
+        trueNeedleType: 'classic',
+        apparentNeedleType: 'slim',
         bezelWidth: 4,
         majorTickEvery: 30,
         minorTickEvery: 10,
@@ -66,6 +70,8 @@ export const SKINS = {
     },
     instrument: {
         // Dark HUD look by default; every color is still overridable via the pickers.
+        trueNeedleType: 'instrument',
+        apparentNeedleType: 'slim',
         solidBackground: true,
         showBezel: true,
         bezelWidth: 3,
@@ -112,7 +118,7 @@ export const SKINS = {
 
 export const SKIN_IDS = Object.keys(SKINS);
 
-export const NEEDLE_TYPES = ['classic', 'slim', 'barbed', 'diamond', 'feather', 'dot_line', 'instrument'];
+export const NEEDLE_TYPES = ['clean', 'classic', 'slim', 'barbed', 'diamond', 'feather', 'dot_line', 'instrument'];
 
 export const SPEED_UNITS = {
     kmh: { label: 'km/h', factor: 1 },

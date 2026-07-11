@@ -136,8 +136,10 @@ export function CompassDial({
         : radius + 28;
     const fontSize = Math.max(11, size * 0.045);
     const innerHubR = skin.innerHubRadius ? radius * skin.innerHubRadius : null;
-    // User's explicit choice takes priority; skin can suggest a default
+    // User's explicit choice takes priority; otherwise fall back to the skin's
+    // default needle, then a global default.
     const trueNeedleType = options.trueNeedleType || skin.trueNeedleType || 'classic';
+    const apparentNeedleType = options.apparentNeedleType || skin.apparentNeedleType || 'slim';
     const ticks = buildTicks(cx, cy, radius, skin, theme, options);
 
     const dialFill = skin.dialFlat
@@ -248,7 +250,7 @@ export function CompassDial({
                 {options.showApparentWind && apparentWindAngle !== null && (
                     <WindNeedle
                         angle={apparentWindAngle}
-                        type={options.apparentNeedleType || 'slim'}
+                        type={apparentNeedleType}
                         length={0.62}
                         needleColor={theme.apparentNeedleColor}
                         tailColor={theme.apparentTailColor}

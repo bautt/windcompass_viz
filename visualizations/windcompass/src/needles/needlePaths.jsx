@@ -6,6 +6,42 @@
  * length is a fraction of compass radius (0–1); we scale against 100 px.
  */
 
+function cleanNeedle(length, needleColor, tailColor) {
+    // Minimal, modern pointer: a slender tapered blade for the pointing half,
+    // a thin balancing tail, and a small open pivot ring. Reads as precise and
+    // uncluttered rather than the bold two-tone lozenge of the classic needle.
+    const tip     = -length * 100;  // pointing tip
+    const baseHw  = 3.4;            // narrow half-width where the blade meets pivot
+    const shoulder = -length * 12;  // slight shoulder just ahead of the pivot
+    const tail    =  length * 34;   // short, thin tail
+    const ringR   = 3.2;            // open pivot ring
+    return (
+        <>
+            {/* Slender tapered pointing blade */}
+            <polygon
+                points={`0,${tip} ${-baseHw},${shoulder} ${-baseHw * 0.7},0 ${baseHw * 0.7},0 ${baseHw},${shoulder}`}
+                fill={needleColor}
+            />
+            {/* Thin balancing tail */}
+            <line
+                x1="0" y1={ringR}
+                x2="0" y2={tail}
+                stroke={tailColor || needleColor}
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                opacity="0.55"
+            />
+            {/* Open pivot ring */}
+            <circle
+                cx="0" cy="0" r={ringR}
+                fill="none"
+                stroke={needleColor}
+                strokeWidth="1.4"
+            />
+        </>
+    );
+}
+
 function classicNeedle(length, needleColor, tailColor) {
     // Traditional magnetic-compass needle: a bold two-tone lozenge that is
     // widest at the pivot, with a long pointing (north) half, a shorter tail
@@ -173,6 +209,7 @@ function instrumentNeedle(length, needleColor) {
 
 export function renderNeedle(type, { length = 0.72, needleColor, tailColor }) {
     switch (type) {
+        case 'clean':      return cleanNeedle(length, needleColor, tailColor);
         case 'slim':       return slimNeedle(length, needleColor, tailColor);
         case 'barbed':     return barbedNeedle(length, needleColor, tailColor);
         case 'diamond':    return diamondNeedle(length, needleColor, tailColor);

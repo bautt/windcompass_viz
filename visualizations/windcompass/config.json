@@ -27,13 +27,13 @@
             },
             "trueNeedleType": {
                 "type": "string",
-                "default": "classic",
-                "enum": ["classic", "slim", "barbed", "diamond", "feather", "dot_line", "instrument"]
+                "default": "",
+                "enum": ["", "clean", "classic", "slim", "barbed", "diamond", "feather", "dot_line", "instrument"]
             },
             "apparentNeedleType": {
                 "type": "string",
-                "default": "slim",
-                "enum": ["classic", "slim", "barbed", "diamond", "feather", "dot_line", "instrument"]
+                "default": "",
+                "enum": ["", "clean", "classic", "slim", "barbed", "diamond", "feather", "dot_line", "instrument"]
             },
             "speedUnit": {
                 "type": "string",
@@ -220,6 +220,8 @@
                             "option": "trueNeedleType",
                             "editorProps": {
                                 "values": [
+                                    { "label": "Auto (match skin)", "value": "" },
+                                    { "label": "Clean", "value": "clean" },
                                     { "label": "Classic", "value": "classic" },
                                     { "label": "Slim", "value": "slim" },
                                     { "label": "Barbed", "value": "barbed" },
@@ -285,6 +287,8 @@
                             "option": "apparentNeedleType",
                             "editorProps": {
                                 "values": [
+                                    { "label": "Auto (match skin)", "value": "" },
+                                    { "label": "Clean", "value": "clean" },
                                     { "label": "Classic", "value": "classic" },
                                     { "label": "Slim", "value": "slim" },
                                     { "label": "Barbed", "value": "barbed" },
