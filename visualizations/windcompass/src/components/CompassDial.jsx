@@ -116,7 +116,7 @@ function CenterSpeedReadout({ cx, cy, speedKmh, unitKey, color }) {
 }
 
 export function CompassDial({
-    skinId = 'minimal',
+    skinId = 'clean',
     theme,
     dialRotation = 0,
     size,
@@ -153,6 +153,10 @@ export function CompassDial({
             role="img"
             aria-label="Wind compass"
         >
+            {/* Fixed-color skins fill their background inside the SVG so panel CSS can't override it */}
+            {skin.fixedColors && (
+                <rect x="0" y="0" width="400" height="400" fill={theme.backgroundColor} />
+            )}
             <defs>
                 {skin.showBezelGradient && (
                     <radialGradient id={`bezelGrad-${skinId}`} cx="50%" cy="45%" r="55%">
@@ -180,7 +184,15 @@ export function CompassDial({
             )}
 
             <g transform={`rotate(${dialRotation} ${cx} ${cy})`}>
-                <circle cx={cx} cy={cy} r={radius} fill={dialFill} />
+                <circle
+                    cx={cx}
+                    cy={cy}
+                    r={radius}
+                    fill={dialFill}
+                    stroke={skin.showBezel ? 'none' : theme.tickMajorColor}
+                    strokeWidth={skin.showBezel ? 0 : 1}
+                    strokeOpacity={skin.showBezel ? 0 : 0.35}
+                />
 
                 {ticks}
 
@@ -228,7 +240,7 @@ export function CompassDial({
                     <WindNeedle
                         angle={trueWindAngle}
                         type={trueNeedleType}
-                        length={skin.trueNeedleType === 'instrument' ? 0.78 : 0.72}
+                        length={trueNeedleType === 'instrument' ? 0.78 : 0.72}
                         needleColor={theme.trueNeedleColor}
                         tailColor={theme.trueTailColor}
                     />
