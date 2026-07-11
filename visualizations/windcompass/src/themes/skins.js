@@ -1,0 +1,106 @@
+/** Compass skin presets — geometry + default colors per light/dark theme. */
+
+export const SKINS = {
+    clean: {
+        showBezel: false,
+        bezelWidth: 0,
+        majorTickEvery: 45,
+        minorTickEvery: 5,
+        minorTickInner: 0.93,
+        minorTickOuter: 1,
+        majorTickInner: 0.84,
+        majorTickOuter: 1,
+        showBezelGradient: false,
+        dialFlat: true,
+        cardinalFontWeight: 300,
+        cardinalLabelRadius: 0.75,
+        showNorthMarker: false,
+        light: {
+            backgroundColor: 'transparent',
+            bezelColor: 'transparent',
+            dialColor: 'rgba(0,0,0,0.04)',
+            textColor: '#3a4550',
+            tickColor: 'rgba(0,0,0,0.18)',
+            tickMajorColor: 'rgba(0,0,0,0.45)',
+        },
+        dark: {
+            backgroundColor: 'transparent',
+            bezelColor: 'transparent',
+            dialColor: 'rgba(255,255,255,0.05)',
+            textColor: '#c8d0d8',
+            tickColor: 'rgba(255,255,255,0.18)',
+            tickMajorColor: 'rgba(255,255,255,0.45)',
+        },
+    },
+    marine: {
+        bezelWidth: 4,
+        majorTickEvery: 30,
+        minorTickEvery: 10,
+        showBezelGradient: true,
+        cardinalFontWeight: 700,
+        light: {
+            bezelColor: '#2a4a6b',
+            dialColor: '#e8f0f8',
+            textColor: '#1a3050',
+            tickColor: '#6a8aaa',
+            tickMajorColor: '#2a5080',
+        },
+        dark: {
+            bezelColor: '#1e3a5f',
+            dialColor: '#0d1a2a',
+            textColor: '#a8c8e8',
+            tickColor: '#3a5a7a',
+            tickMajorColor: '#5a8ab8',
+        },
+    },
+    instrument: {
+        showBezel: false,
+        bezelWidth: 0,
+        majorTickEvery: 90,
+        minorTickEvery: 5,
+        minorTickInner: 0.94,
+        minorTickOuter: 1,
+        majorTickInner: 0.86,
+        majorTickOuter: 1,
+        showBezelGradient: false,
+        dialFlat: true,
+        cardinalFontWeight: 500,
+        cardinalLabelRadius: 0.8,
+        innerHubRadius: 0.34,
+        showNorthMarker: true,
+        centerSpeedReadout: true,
+        light: {
+            backgroundColor: '#000000',
+            bezelColor: '#000000',
+            dialColor: '#1c1c1c',
+            innerHubColor: '#262626',
+            textColor: '#ffffff',
+            tickColor: '#707070',
+            tickMajorColor: '#909090',
+            trueNeedleColor: '#ffffff',
+            trueTailColor: '#ffffff',
+        },
+        dark: {
+            backgroundColor: '#000000',
+            bezelColor: '#000000',
+            dialColor: '#1c1c1c',
+            innerHubColor: '#262626',
+            textColor: '#ffffff',
+            tickColor: '#707070',
+            tickMajorColor: '#909090',
+            trueNeedleColor: '#ffffff',
+            trueTailColor: '#ffffff',
+        },
+    },
+};
+
+export const SKIN_IDS = Object.keys(SKINS);
+
+export const NEEDLE_TYPES = ['classic', 'slim', 'barbed', 'diamond', 'feather', 'dot_line', 'instrument'];
+
+export const SPEED_UNITS = {
+    kmh: { label: 'km/h', factor: 1 },
+    ms: { label: 'm/s', factor: 1 / 3.6 },
+    knots: { label: 'kn', factor: 1 / 1.852 },
+    mph: { label: 'mph', factor: 1 / 1.60934 },
+};

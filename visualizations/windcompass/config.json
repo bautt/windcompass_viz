@@ -1,0 +1,457 @@
+{
+    "showTitleAndDescription": true,
+    "includeInToolbar": true,
+    "includeInVizSwitcher": true,
+    "showDrilldown": false,
+    "config": {
+        "name": "Wind Compass",
+        "description": "Animated compass for wind direction and speed. Requires one search row with wind_direction (0–360°) and wind_speed (numeric). Optional: location, temperature, heading, apparent wind.",
+        "category": "Custom",
+        "dataContract": {
+            "requiredDataSources": ["primary"]
+        },
+        "size": {
+            "initialWidth": 400,
+            "initialHeight": 420
+        },
+        "optionsSchema": {
+            "skin": {
+                "type": "string",
+                "default": "clean",
+                "enum": ["clean", "marine", "instrument"]
+            },
+            "themeOverride": {
+                "type": "string",
+                "default": "auto",
+                "enum": ["auto", "light", "dark"]
+            },
+            "trueNeedleType": {
+                "type": "string",
+                "default": "classic",
+                "enum": ["classic", "slim", "barbed", "diamond", "feather", "dot_line", "instrument"]
+            },
+            "apparentNeedleType": {
+                "type": "string",
+                "default": "slim",
+                "enum": ["classic", "slim", "barbed", "diamond", "feather", "dot_line", "instrument"]
+            },
+            "speedUnit": {
+                "type": "string",
+                "default": "kmh",
+                "enum": ["kmh", "ms", "knots", "mph"]
+            },
+            "tempUnit": {
+                "type": "string",
+                "default": "c",
+                "enum": ["c", "f"]
+            },
+            "backgroundColor": { "type": "string", "default": "" },
+            "bezelColor": { "type": "string", "default": "" },
+            "dialColor": { "type": "string", "default": "" },
+            "textColor": { "type": "string", "default": "" },
+            "tickColor": { "type": "string", "default": "" },
+            "tickMajorColor": { "type": "string", "default": "" },
+            "hubColor": { "type": "string", "default": "" },
+            "trueNeedleColor": { "type": "string", "default": "#e74c3c" },
+            "trueTailColor": { "type": "string", "default": "#c0392b" },
+            "apparentNeedleColor": { "type": "string", "default": "#3498db" },
+            "apparentTailColor": { "type": "string", "default": "#2980b9" },
+            "showCardinals": { "type": "boolean", "default": true },
+            "showMajorTicks": { "type": "boolean", "default": true },
+            "showMinorTicks": { "type": "boolean", "default": true },
+            "showTrueWind": { "type": "boolean", "default": true },
+            "showTrueDirectionReadout": { "type": "boolean", "default": true },
+            "showTrueSpeedReadout": { "type": "boolean", "default": true },
+            "showApparentWind": { "type": "boolean", "default": false },
+            "showApparentDirectionReadout": { "type": "boolean", "default": false },
+            "showApparentSpeedReadout": { "type": "boolean", "default": false },
+            "showHeadingReadout": { "type": "boolean", "default": false },
+            "showTemperature": { "type": "boolean", "default": false },
+            "showLocation": { "type": "boolean", "default": true },
+            "showDirectionLabel": { "type": "boolean", "default": true },
+            "animationDurationMs": { "type": "number", "default": 600 },
+            "readoutPosition": {
+                "type": "string",
+                "default": "bottom",
+                "enum": ["bottom", "top"]
+            },
+            "fieldWindDirection": { "type": "string", "default": "wind_direction" },
+            "fieldWindSpeed": { "type": "string", "default": "wind_speed" },
+            "fieldLocation": { "type": "string", "default": "location" },
+            "fieldTemperature": { "type": "string", "default": "temperature" },
+            "fieldHeading": { "type": "string", "default": "heading" },
+            "fieldApparentDirection": { "type": "string", "default": "apparent_wind_direction" },
+            "fieldApparentSpeed": { "type": "string", "default": "apparent_wind_speed" },
+            "fieldWindGusts": { "type": "string", "default": "wind_gusts" },
+            "fieldCountry": { "type": "string", "default": "country" }
+        },
+        "editorConfig": [
+            {
+                "label": "Style",
+                "layout": [
+                    [
+                        {
+                            "editor": "editor.select",
+                            "label": "Skin",
+                            "option": "skin",
+                            "editorProps": {
+                                "values": [
+                                    { "label": "Clean", "value": "clean" },
+                                    { "label": "Marine", "value": "marine" },
+                                    { "label": "Instrument", "value": "instrument" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.select",
+                            "label": "Theme",
+                            "option": "themeOverride",
+                            "editorProps": {
+                                "values": [
+                                    { "label": "Auto (follow dashboard)", "value": "auto" },
+                                    { "label": "Light", "value": "light" },
+                                    { "label": "Dark", "value": "dark" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Cardinal labels",
+                            "option": "showCardinals"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Major ticks",
+                            "option": "showMajorTicks"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Minor ticks",
+                            "option": "showMinorTicks"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.number",
+                            "label": "Animation (ms)",
+                            "option": "animationDurationMs"
+                        }
+                    ]
+                ]
+            },
+            {
+                "label": "Colors",
+                "layout": [
+                    [
+                        {
+                            "editor": "editor.color",
+                            "label": "Background",
+                            "option": "backgroundColor"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.color",
+                            "label": "Bezel",
+                            "option": "bezelColor"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.color",
+                            "label": "Dial face",
+                            "option": "dialColor"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.color",
+                            "label": "Text",
+                            "option": "textColor"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.color",
+                            "label": "Minor ticks",
+                            "option": "tickColor"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.color",
+                            "label": "Major ticks",
+                            "option": "tickMajorColor"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.color",
+                            "label": "Center hub",
+                            "option": "hubColor"
+                        }
+                    ]
+                ]
+            },
+            {
+                "label": "True wind",
+                "layout": [
+                    [
+                        {
+                            "editor": "editor.select",
+                            "label": "Needle type",
+                            "option": "trueNeedleType",
+                            "editorProps": {
+                                "values": [
+                                    { "label": "Classic", "value": "classic" },
+                                    { "label": "Slim", "value": "slim" },
+                                    { "label": "Barbed", "value": "barbed" },
+                                    { "label": "Diamond", "value": "diamond" },
+                                    { "label": "Feather", "value": "feather" },
+                                    { "label": "Dot + line", "value": "dot_line" },
+                                    { "label": "Instrument", "value": "instrument" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.color",
+                            "label": "Needle color",
+                            "option": "trueNeedleColor"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.color",
+                            "label": "Tail color",
+                            "option": "trueTailColor"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Show needle",
+                            "option": "showTrueWind"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Direction readout",
+                            "option": "showTrueDirectionReadout"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Speed readout",
+                            "option": "showTrueSpeedReadout"
+                        }
+                    ]
+                ]
+            },
+            {
+                "label": "Apparent wind",
+                "layout": [
+                    [
+                        {
+                            "editor": "editor.select",
+                            "label": "Needle type",
+                            "option": "apparentNeedleType",
+                            "editorProps": {
+                                "values": [
+                                    { "label": "Classic", "value": "classic" },
+                                    { "label": "Slim", "value": "slim" },
+                                    { "label": "Barbed", "value": "barbed" },
+                                    { "label": "Diamond", "value": "diamond" },
+                                    { "label": "Feather", "value": "feather" },
+                                    { "label": "Dot + line", "value": "dot_line" },
+                                    { "label": "Instrument", "value": "instrument" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.color",
+                            "label": "Needle color",
+                            "option": "apparentNeedleColor"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.color",
+                            "label": "Tail color",
+                            "option": "apparentTailColor"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Show needle",
+                            "option": "showApparentWind"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Direction readout",
+                            "option": "showApparentDirectionReadout"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Speed readout",
+                            "option": "showApparentSpeedReadout"
+                        }
+                    ]
+                ]
+            },
+            {
+                "label": "Readouts",
+                "layout": [
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Location",
+                            "option": "showLocation"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Temperature",
+                            "option": "showTemperature"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Heading",
+                            "option": "showHeadingReadout"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Compass label (N, NNW, …)",
+                            "option": "showDirectionLabel"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.select",
+                            "label": "Speed unit",
+                            "option": "speedUnit",
+                            "editorProps": {
+                                "values": [
+                                    { "label": "km/h", "value": "kmh" },
+                                    { "label": "m/s", "value": "ms" },
+                                    { "label": "Knots", "value": "knots" },
+                                    { "label": "mph", "value": "mph" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.select",
+                            "label": "Temperature unit",
+                            "option": "tempUnit",
+                            "editorProps": {
+                                "values": [
+                                    { "label": "Celsius", "value": "c" },
+                                    { "label": "Fahrenheit", "value": "f" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.select",
+                            "label": "Readout position",
+                            "option": "readoutPosition",
+                            "editorProps": {
+                                "values": [
+                                    { "label": "Below dial", "value": "bottom" },
+                                    { "label": "Above dial", "value": "top" }
+                                ]
+                            }
+                        }
+                    ]
+                ]
+            },
+            {
+                "label": "Data fields",
+                "layout": [
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Wind direction (required)",
+                            "option": "fieldWindDirection"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Wind speed (required)",
+                            "option": "fieldWindSpeed"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Location",
+                            "option": "fieldLocation"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Country",
+                            "option": "fieldCountry"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Temperature",
+                            "option": "fieldTemperature"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Heading",
+                            "option": "fieldHeading"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Apparent direction",
+                            "option": "fieldApparentDirection"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Apparent speed",
+                            "option": "fieldApparentSpeed"
+                        }
+                    ]
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,8 @@
+[]
+access = read : [ * ], write : [ admin, power ]
+
+[visualizations/_vizName_]
+export = system
+
+[views/windcompass_demo]
+export = system

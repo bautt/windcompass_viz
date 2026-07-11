@@ -1,0 +1,94 @@
+{
+    "title": "Wind Compass — Live Weather",
+    "description": "Live Open-Meteo wind compass with city selector (requires index=s4c_meteo)",
+    "visualizations": {
+        "viz_wind_compass": {
+            "type": "windcompass.windcompass",
+            "title": "Wind Compass",
+            "dataSources": {
+                "primary": "ds_wind"
+            },
+            "options": {
+                "windcompass.windcompass.skin": "instrument",
+                "windcompass.windcompass.showTemperature": true,
+                "windcompass.windcompass.showLocation": true,
+                "windcompass.windcompass.fieldWindDirection": "wind_direction_10m",
+                "windcompass.windcompass.fieldWindSpeed": "wind_speed_10m",
+                "windcompass.windcompass.fieldLocation": "city",
+                "windcompass.windcompass.fieldCountry": "country",
+                "windcompass.windcompass.fieldTemperature": "temperature_2m"
+            }
+        }
+    },
+    "dataSources": {
+        "ds_wind": {
+            "type": "ds.search",
+            "name": "Latest wind row",
+            "options": {
+                "query": "index=s4c_meteo sourcetype=open_meteo:weather:json city=\"$city$\"\n| sort - _time\n| head 1\n| table city country wind_direction_10m wind_speed_10m temperature_2m",
+                "queryParameters": {
+                    "earliest": "$time_range.earliest$",
+                    "latest": "$time_range.latest$"
+                }
+            }
+        }
+    },
+    "defaults": {
+        "dataSources": {
+            "ds.search": {
+                "options": {
+                    "queryParameters": {
+                        "earliest": "$time_range.earliest$",
+                        "latest": "$time_range.latest$"
+                    }
+                }
+            }
+        }
+    },
+    "inputs": {
+        "input_time": {
+            "type": "input.timerange",
+            "title": "Time range",
+            "options": {
+                "token": "time_range",
+                "defaultValue": "-1h,now"
+            }
+        },
+        "input_city": {
+            "type": "input.dropdown",
+            "title": "City",
+            "options": {
+                "token": "city",
+                "defaultValue": "Berlin",
+                "items": [
+                    { "label": "Berlin", "value": "Berlin" },
+                    { "label": "Frankfurt", "value": "Frankfurt" },
+                    { "label": "Krakow", "value": "Krakow" },
+                    { "label": "New York", "value": "New York" },
+                    { "label": "Riga", "value": "Riga" },
+                    { "label": "San Francisco", "value": "San Francisco" },
+                    { "label": "Sydney", "value": "Sydney" },
+                    { "label": "Tallinn", "value": "Tallinn" },
+                    { "label": "Vilnius", "value": "Vilnius" },
+                    { "label": "Warsaw", "value": "Warsaw" }
+                ]
+            }
+        }
+    },
+    "layout": {
+        "type": "absolute",
+        "options": {
+            "width": 1200,
+            "height": 700,
+            "backgroundColor": "#000000"
+        },
+        "globalInputs": ["input_time", "input_city"],
+        "structure": [
+            {
+                "item": "viz_wind_compass",
+                "type": "block",
+                "position": { "x": 350, "y": 80, "w": 500, "h": 520 }
+            }
+        ]
+    }
+}
