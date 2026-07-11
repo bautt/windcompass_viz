@@ -39,7 +39,5 @@ export function resolveTheme({ skinId = 'clean', dsTheme = 'light', options = {}
         hubColor: pick(options.hubColor, palette.textColor),
         trueNeedleColor: pick(options.trueNeedleColor, palette.trueNeedleColor || '#e74c3c'),
         trueTailColor: pick(options.trueTailColor, palette.trueTailColor || '#c0392b'),
-        apparentNeedleColor: pick(options.apparentNeedleColor, palette.apparentNeedleColor || '#3498db'),
-        apparentTailColor: pick(options.apparentTailColor, palette.apparentTailColor || '#2980b9'),
     };
 }

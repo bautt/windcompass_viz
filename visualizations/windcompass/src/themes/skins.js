@@ -4,7 +4,6 @@ export const SKINS = {
     clean: {
         // Fully transparent/minimal — user colors drive everything via the editor pickers.
         trueNeedleType: 'clean',
-        apparentNeedleType: 'slim',
         showBezel: false,
         bezelWidth: 0,
         majorTickEvery: 30,
@@ -47,7 +46,6 @@ export const SKINS = {
     },
     marine: {
         trueNeedleType: 'classic',
-        apparentNeedleType: 'slim',
         bezelWidth: 4,
         majorTickEvery: 30,
         minorTickEvery: 10,
@@ -71,7 +69,6 @@ export const SKINS = {
     instrument: {
         // Dark HUD look by default; every color is still overridable via the pickers.
         trueNeedleType: 'instrument',
-        apparentNeedleType: 'slim',
         solidBackground: true,
         showBezel: true,
         bezelWidth: 3,
@@ -97,8 +94,6 @@ export const SKINS = {
             tickMajorColor: '#aaaaaa',
             trueNeedleColor: '#ffffff',
             trueTailColor: '#cccccc',
-            apparentNeedleColor: '#4fc3f7',
-            apparentTailColor: '#0288d1',
         },
         dark: {
             backgroundColor: '#111111',
@@ -110,8 +105,6 @@ export const SKINS = {
             tickMajorColor: '#aaaaaa',
             trueNeedleColor: '#ffffff',
             trueTailColor: '#cccccc',
-            apparentNeedleColor: '#4fc3f7',
-            apparentTailColor: '#0288d1',
         },
     },
 };

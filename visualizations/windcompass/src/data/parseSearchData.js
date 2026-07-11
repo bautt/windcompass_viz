@@ -95,21 +95,6 @@ export function parseSearchData(data, options = {}) {
         );
     }
 
-    const headingField = resolveField(
-        data,
-        FIELD_ALIASES.heading,
-        options.fieldHeading,
-    );
-    const awdField = resolveField(
-        data,
-        FIELD_ALIASES.apparentWindDirection,
-        options.fieldApparentDirection,
-    );
-    const awsField = resolveField(
-        data,
-        FIELD_ALIASES.apparentWindSpeed,
-        options.fieldApparentSpeed,
-    );
     const tempField = resolveField(
         data,
         FIELD_ALIASES.temperature,
@@ -131,9 +116,6 @@ export function parseSearchData(data, options = {}) {
         options.fieldWindGusts,
     );
 
-    const heading = parseNumber(headingField.value, headingField.field);
-    const apparentWindDirection = parseNumber(awdField.value, awdField.field);
-    const apparentWindSpeed = parseNumber(awsField.value, awsField.field);
     const temperature = parseNumber(tempField.value, tempField.field);
     const windGusts = parseNumber(gustField.value, gustField.field);
 
@@ -146,10 +128,6 @@ export function parseSearchData(data, options = {}) {
         windDirection: normalizeDegrees(windDirection),
         windSpeed,
         windGusts,
-        heading: heading !== null ? normalizeDegrees(heading) : null,
-        apparentWindDirection:
-            apparentWindDirection !== null ? normalizeDegrees(apparentWindDirection) : null,
-        apparentWindSpeed,
         temperature,
         location,
         fieldsUsed: {

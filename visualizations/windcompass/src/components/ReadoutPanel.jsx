@@ -33,31 +33,6 @@ export function ReadoutPanel({ data, options, theme }) {
         });
     }
 
-    if (options.showApparentDirectionReadout && data.apparentWindDirection !== null) {
-        items.push({
-            key: 'awd',
-            label: 'App dir',
-            value: formatDirection(data.apparentWindDirection, { showCompass: showCompassLabel }),
-        });
-    }
-
-    if (options.showApparentSpeedReadout && data.apparentWindSpeed !== null) {
-        const speed = formatSpeed(data.apparentWindSpeed, options.speedUnit || 'kmh');
-        items.push({
-            key: 'aws',
-            label: 'App spd',
-            value: `${speed.value} ${speed.label}`,
-        });
-    }
-
-    if (options.showHeadingReadout && data.heading !== null) {
-        items.push({
-            key: 'hdg',
-            label: 'Heading',
-            value: formatDirection(data.heading, { showCompass: showCompassLabel }),
-        });
-    }
-
     if (options.showTemperature && data.temperature !== null) {
         items.push({
             key: 'temp',

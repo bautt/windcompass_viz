@@ -123,7 +123,6 @@ export function CompassDial({
     options,
     data,
     trueWindAngle,
-    apparentWindAngle,
 }) {
     const cx = 200;
     const cy = 200;
@@ -139,7 +138,6 @@ export function CompassDial({
     // User's explicit choice takes priority; otherwise fall back to the skin's
     // default needle, then a global default.
     const trueNeedleType = options.trueNeedleType || skin.trueNeedleType || 'classic';
-    const apparentNeedleType = options.apparentNeedleType || skin.apparentNeedleType || 'slim';
     const ticks = buildTicks(cx, cy, radius, skin, theme, options);
 
     const dialFill = skin.dialFlat
@@ -245,16 +243,6 @@ export function CompassDial({
                         length={trueNeedleType === 'instrument' ? 0.78 : 0.72}
                         needleColor={theme.trueNeedleColor}
                         tailColor={theme.trueTailColor}
-                    />
-                )}
-                {options.showApparentWind && apparentWindAngle !== null && (
-                    <WindNeedle
-                        angle={apparentWindAngle}
-                        type={apparentNeedleType}
-                        length={0.62}
-                        needleColor={theme.apparentNeedleColor}
-                        tailColor={theme.apparentTailColor}
-                        opacity={0.85}
                     />
                 )}
             </g>

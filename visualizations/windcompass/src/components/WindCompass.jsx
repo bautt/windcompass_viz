@@ -23,18 +23,10 @@ function Message({ children, dark }) {
     );
 }
 
-// Keys that survive a reset — identity, mapping, and the reset flag itself.
-const PRESERVED_ON_RESET = new Set([
-    'skin', 'themeOverride', 'useDefaults',
-    ...Object.keys(FIELD_DEFAULTS),
-]);
-
 const DEFAULT_OPTIONS = {
     skin: 'clean',
     themeOverride: 'auto',
-    useDefaults: false,
     trueNeedleType: '',
-    apparentNeedleType: '',
     speedUnit: 'kmh',
     tempUnit: 'c',
     showCardinals: true,
@@ -46,7 +38,6 @@ const DEFAULT_OPTIONS = {
     showCenterSpeed: false,
     showLocation: true,
     showTemperature: false,
-    showApparentWind: false,
     showDirectionLabel: true,
     animationDurationMs: 600,
     // color overrides default to empty (inherit from skin)
@@ -59,8 +50,6 @@ const DEFAULT_OPTIONS = {
     hubColor: '',
     trueNeedleColor: '',
     trueTailColor: '',
-    apparentNeedleColor: '',
-    apparentTailColor: '',
     ...FIELD_DEFAULTS,
 };
 
@@ -91,19 +80,10 @@ export function WindCompass() {
     const { dataSources, loading, options: rawOptions, dimensions, theme: dsTheme, mode } =
         useVisualizationState();
 
-    const options = useMemo(() => {
-        const normalized = normalizeOptions(rawOptions, DEFAULT_OPTIONS);
-        // useDefaults=true → apply all defaults, preserving only identity/mapping keys.
-        // Uncheck the box → immediately back to custom stored settings.
-        if (normalized.useDefaults === true) {
-            const reset = { ...DEFAULT_OPTIONS };
-            for (const key of PRESERVED_ON_RESET) {
-                reset[key] = normalized[key];
-            }
-            return reset;
-        }
-        return normalized;
-    }, [rawOptions]);
+    const options = useMemo(
+        () => normalizeOptions(rawOptions, DEFAULT_OPTIONS),
+        [rawOptions],
+    );
     const dark = dsTheme === 'dark';
     const snap = mode === 'edit';
     const animDuration = Number(options.animationDurationMs) || 600;
@@ -140,22 +120,10 @@ export function WindCompass() {
         ? normalizeDegrees(displayRow.windDirection)
         : 0;
 
-    const hasApparent = !!displayRow && displayRow.apparentWindDirection != null;
-
-    const apparentWindTarget = hasApparent
-        ? normalizeDegrees(displayRow.apparentWindDirection)
-        : 0;
-
     const trueWindAngle = useAngleAnimator(trueWindTarget, {
         durationMs: animDuration,
         snap,
         enabled: !!displayRow,
-    });
-
-    const apparentWindAngle = useAngleAnimator(apparentWindTarget, {
-        durationMs: animDuration,
-        snap,
-        enabled: hasApparent && options.showApparentWind,
     });
 
     const dialRotation = 0;
@@ -199,9 +167,6 @@ export function WindCompass() {
                     options={options}
                     data={displayRow}
                     trueWindAngle={trueWindAngle}
-                    apparentWindAngle={
-                        options.showApparentWind && hasApparent ? apparentWindAngle : null
-                    }
                 />
             </div>
             {displayRow ? (

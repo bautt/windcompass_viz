@@ -5,7 +5,7 @@
     "showDrilldown": false,
     "config": {
         "name": "Wind Compass",
-        "description": "Animated compass for wind direction and speed. Requires one search row with wind_direction (0–360°) and wind_speed (numeric). Optional: location, temperature, heading, apparent wind.",
+        "description": "Animated compass for wind direction and speed. Requires one search row with wind_direction (0–360°) and wind_speed (numeric). Optional: location, temperature.",
         "category": "Custom",
         "dataContract": {
             "requiredDataSources": ["primary"]
@@ -30,11 +30,6 @@
                 "default": "",
                 "enum": ["", "clean", "classic", "slim", "barbed", "diamond", "feather", "dot_line", "instrument"]
             },
-            "apparentNeedleType": {
-                "type": "string",
-                "default": "",
-                "enum": ["", "clean", "classic", "slim", "barbed", "diamond", "feather", "dot_line", "instrument"]
-            },
             "speedUnit": {
                 "type": "string",
                 "default": "kmh",
@@ -45,7 +40,6 @@
                 "default": "c",
                 "enum": ["c", "f"]
             },
-            "useDefaults": { "type": "boolean", "default": false },
             "backgroundColor": { "type": "string", "default": "" },
             "bezelColor": { "type": "string", "default": "" },
             "dialColor": { "type": "string", "default": "" },
@@ -55,8 +49,6 @@
             "hubColor": { "type": "string", "default": "" },
             "trueNeedleColor": { "type": "string", "default": "#e74c3c" },
             "trueTailColor": { "type": "string", "default": "#c0392b" },
-            "apparentNeedleColor": { "type": "string", "default": "#3498db" },
-            "apparentTailColor": { "type": "string", "default": "#2980b9" },
             "showCardinals": { "type": "boolean", "default": true },
             "showMajorTicks": { "type": "boolean", "default": true },
             "showMinorTicks": { "type": "boolean", "default": true },
@@ -64,10 +56,6 @@
             "showTrueDirectionReadout": { "type": "boolean", "default": true },
             "showTrueSpeedReadout": { "type": "boolean", "default": true },
             "showCenterSpeed": { "type": "boolean", "default": false },
-            "showApparentWind": { "type": "boolean", "default": false },
-            "showApparentDirectionReadout": { "type": "boolean", "default": false },
-            "showApparentSpeedReadout": { "type": "boolean", "default": false },
-            "showHeadingReadout": { "type": "boolean", "default": false },
             "showTemperature": { "type": "boolean", "default": false },
             "showLocation": { "type": "boolean", "default": true },
             "showDirectionLabel": { "type": "boolean", "default": true },
@@ -81,9 +69,6 @@
             "fieldWindSpeed": { "type": "string", "default": "wind_speed" },
             "fieldLocation": { "type": "string", "default": "location" },
             "fieldTemperature": { "type": "string", "default": "temperature" },
-            "fieldHeading": { "type": "string", "default": "heading" },
-            "fieldApparentDirection": { "type": "string", "default": "apparent_wind_direction" },
-            "fieldApparentSpeed": { "type": "string", "default": "apparent_wind_speed" },
             "fieldWindGusts": { "type": "string", "default": "wind_gusts" },
             "fieldCountry": { "type": "string", "default": "country" }
         },
@@ -91,13 +76,6 @@
             {
                 "label": "Style",
                 "layout": [
-                    [
-                        {
-                            "editor": "editor.checkbox",
-                            "label": "↺ Reset to skin defaults (uncheck to customize)",
-                            "option": "useDefaults"
-                        }
-                    ],
                     [
                         {
                             "editor": "editor.select",
@@ -278,66 +256,6 @@
                 ]
             },
             {
-                "label": "Apparent wind",
-                "layout": [
-                    [
-                        {
-                            "editor": "editor.select",
-                            "label": "Needle type",
-                            "option": "apparentNeedleType",
-                            "editorProps": {
-                                "values": [
-                                    { "label": "Auto (match skin)", "value": "" },
-                                    { "label": "Clean", "value": "clean" },
-                                    { "label": "Classic", "value": "classic" },
-                                    { "label": "Slim", "value": "slim" },
-                                    { "label": "Barbed", "value": "barbed" },
-                                    { "label": "Diamond", "value": "diamond" },
-                                    { "label": "Feather", "value": "feather" },
-                                    { "label": "Dot + line", "value": "dot_line" },
-                                    { "label": "Instrument", "value": "instrument" }
-                                ]
-                            }
-                        }
-                    ],
-                    [
-                        {
-                            "editor": "editor.color",
-                            "label": "Needle color",
-                            "option": "apparentNeedleColor"
-                        }
-                    ],
-                    [
-                        {
-                            "editor": "editor.color",
-                            "label": "Tail color",
-                            "option": "apparentTailColor"
-                        }
-                    ],
-                    [
-                        {
-                            "editor": "editor.checkbox",
-                            "label": "Show apparent-wind needle",
-                            "option": "showApparentWind"
-                        }
-                    ],
-                    [
-                        {
-                            "editor": "editor.checkbox",
-                            "label": "Direction readout",
-                            "option": "showApparentDirectionReadout"
-                        }
-                    ],
-                    [
-                        {
-                            "editor": "editor.checkbox",
-                            "label": "Speed readout",
-                            "option": "showApparentSpeedReadout"
-                        }
-                    ]
-                ]
-            },
-            {
                 "label": "Readouts",
                 "layout": [
                     [
@@ -352,13 +270,6 @@
                             "editor": "editor.checkbox",
                             "label": "Temperature",
                             "option": "showTemperature"
-                        }
-                    ],
-                    [
-                        {
-                            "editor": "editor.checkbox",
-                            "label": "Heading",
-                            "option": "showHeadingReadout"
                         }
                     ],
                     [
@@ -447,27 +358,6 @@
                             "editor": "editor.text",
                             "label": "Temperature",
                             "option": "fieldTemperature"
-                        }
-                    ],
-                    [
-                        {
-                            "editor": "editor.text",
-                            "label": "Heading",
-                            "option": "fieldHeading"
-                        }
-                    ],
-                    [
-                        {
-                            "editor": "editor.text",
-                            "label": "Apparent direction",
-                            "option": "fieldApparentDirection"
-                        }
-                    ],
-                    [
-                        {
-                            "editor": "editor.text",
-                            "label": "Apparent speed",
-                            "option": "fieldApparentSpeed"
                         }
                     ]
                 ]
