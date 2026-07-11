@@ -45,6 +45,11 @@
                 "default": "c",
                 "enum": ["c", "f"]
             },
+            "colorMode": {
+                "type": "string",
+                "default": "skin",
+                "enum": ["skin", "custom"]
+            },
             "backgroundColor": { "type": "string", "default": "" },
             "bezelColor": { "type": "string", "default": "" },
             "dialColor": { "type": "string", "default": "" },
@@ -150,6 +155,19 @@
             {
                 "label": "Colors",
                 "layout": [
+                    [
+                        {
+                            "editor": "editor.select",
+                            "label": "Color source",
+                            "option": "colorMode",
+                            "editorProps": {
+                                "values": [
+                                    { "label": "Skin defaults  ↺ (reset)", "value": "skin" },
+                                    { "label": "Custom (use pickers below)", "value": "custom" }
+                                ]
+                            }
+                        }
+                    ],
                     [
                         {
                             "editor": "editor.color",

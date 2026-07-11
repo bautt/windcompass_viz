@@ -30,10 +30,14 @@ function coerceValue(name, value, defaultValue) {
     }
 
     if (name === 'skin') {
-        // Accept old skin IDs for backwards compat
         const aliases = { minimal: 'clean', marine_dark: 'marine' };
         const resolved = aliases[value] || value;
         if (SKINS[resolved]) return resolved;
+    }
+
+    if (name === 'colorMode') {
+        if (value === 'custom' || value === 'skin') return value;
+        return 'skin';
     }
 
     return value;

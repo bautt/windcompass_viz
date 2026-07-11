@@ -20,10 +20,9 @@ export function resolveTheme({ skinId = 'clean', dsTheme = 'light', options = {}
         : options.themeOverride;
     const palette = skin[themeKey] || skin.light;
 
-    // Fixed-color skins (instrument) always use their palette — no user overrides.
-    const pick = skin.fixedColors
-        ? (_override, fallback) => fallback
-        : pickColor;
+    // Fixed-color skins (instrument) OR colorMode === 'skin' → ignore user overrides.
+    const useCustomColors = !skin.fixedColors && options.colorMode === 'custom';
+    const pick = useCustomColors ? pickColor : (_override, fallback) => fallback;
 
     return {
         skin,

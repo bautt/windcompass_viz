@@ -26,6 +26,7 @@ function Message({ children, dark }) {
 const DEFAULT_OPTIONS = {
     skin: 'clean',
     themeOverride: 'auto',
+    colorMode: 'skin',
     trueNeedleType: 'classic',
     apparentNeedleType: 'slim',
     speedUnit: 'kmh',
