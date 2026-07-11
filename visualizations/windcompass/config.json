@@ -45,11 +45,7 @@
                 "default": "c",
                 "enum": ["c", "f"]
             },
-            "colorMode": {
-                "type": "string",
-                "default": "skin",
-                "enum": ["skin", "custom"]
-            },
+            "useDefaults": { "type": "boolean", "default": false },
             "backgroundColor": { "type": "string", "default": "" },
             "bezelColor": { "type": "string", "default": "" },
             "dialColor": { "type": "string", "default": "" },
@@ -67,6 +63,7 @@
             "showTrueWind": { "type": "boolean", "default": true },
             "showTrueDirectionReadout": { "type": "boolean", "default": true },
             "showTrueSpeedReadout": { "type": "boolean", "default": true },
+            "showCenterSpeed": { "type": "boolean", "default": false },
             "showApparentWind": { "type": "boolean", "default": false },
             "showApparentDirectionReadout": { "type": "boolean", "default": false },
             "showApparentSpeedReadout": { "type": "boolean", "default": false },
@@ -94,6 +91,13 @@
             {
                 "label": "Style",
                 "layout": [
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "↺ Reset to skin defaults (uncheck to customize)",
+                            "option": "useDefaults"
+                        }
+                    ],
                     [
                         {
                             "editor": "editor.select",
@@ -155,19 +159,6 @@
             {
                 "label": "Colors",
                 "layout": [
-                    [
-                        {
-                            "editor": "editor.select",
-                            "label": "Color source",
-                            "option": "colorMode",
-                            "editorProps": {
-                                "values": [
-                                    { "label": "Skin defaults  ↺ (reset)", "value": "skin" },
-                                    { "label": "Custom (use pickers below)", "value": "custom" }
-                                ]
-                            }
-                        }
-                    ],
                     [
                         {
                             "editor": "editor.color",
@@ -273,6 +264,13 @@
                             "editor": "editor.checkbox",
                             "label": "Speed readout",
                             "option": "showTrueSpeedReadout"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Speed in center hub",
+                            "option": "showCenterSpeed"
                         }
                     ]
                 ]

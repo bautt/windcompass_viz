@@ -24,7 +24,7 @@ export function ReadoutPanel({ data, options, theme }) {
         });
     }
 
-    if (options.showTrueSpeedReadout !== false && !theme.skin?.centerSpeedReadout) {
+    if (options.showTrueSpeedReadout !== false && !options.showCenterSpeed) {
         const speed = formatSpeed(data.windSpeed, options.speedUnit || 'kmh');
         items.push({
             key: 'tws',

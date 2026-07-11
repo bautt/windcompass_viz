@@ -153,8 +153,8 @@ export function CompassDial({
             role="img"
             aria-label="Wind compass"
         >
-            {/* Fixed-color skins fill their background inside the SVG so panel CSS can't override it */}
-            {skin.fixedColors && (
+            {/* Solid-background skins (or an explicit bg color) fill inside the SVG so panel CSS can't override it */}
+            {(skin.solidBackground || (theme.backgroundColor && theme.backgroundColor !== 'transparent')) && (
                 <rect x="0" y="0" width="400" height="400" fill={theme.backgroundColor} />
             )}
             <defs>
@@ -189,9 +189,9 @@ export function CompassDial({
                     cy={cy}
                     r={radius}
                     fill={dialFill}
-                    stroke={skin.showBezel ? 'none' : theme.tickMajorColor}
-                    strokeWidth={skin.showBezel ? 0 : 1}
-                    strokeOpacity={skin.showBezel ? 0 : 0.35}
+                    stroke={showBezel ? 'none' : theme.dialRingColor}
+                    strokeWidth={showBezel ? 0 : 1.5}
+                    strokeOpacity={showBezel ? 0 : 1}
                 />
 
                 {ticks}
@@ -257,7 +257,7 @@ export function CompassDial({
                 )}
             </g>
 
-            {skin.centerSpeedReadout &&
+            {options.showCenterSpeed &&
                 data &&
                 options.showTrueSpeedReadout !== false && (
                     <CenterSpeedReadout

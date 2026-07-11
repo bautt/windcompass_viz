@@ -17,10 +17,14 @@ export const SKINS = {
         cardinalLabelRadius: 0.74,
         showNorthMarker: false,
         // No fixedColors — all color pickers apply.
+        // Subtle translucent dial + ring so the skin always reads as a distinct
+        // compass on ANY dashboard background (transparent looked "invisible"/broken).
+        dialRing: true,
         light: {
             backgroundColor: 'transparent',
             bezelColor: 'transparent',
-            dialColor: 'transparent',
+            dialColor: 'rgba(0,0,0,0.035)',
+            dialRingColor: 'rgba(0,0,0,0.30)',
             textColor: '#2c3e50',
             tickColor: 'rgba(0,0,0,0.20)',
             tickMajorColor: 'rgba(0,0,0,0.50)',
@@ -30,7 +34,8 @@ export const SKINS = {
         dark: {
             backgroundColor: 'transparent',
             bezelColor: 'transparent',
-            dialColor: 'transparent',
+            dialColor: 'rgba(255,255,255,0.05)',
+            dialRingColor: 'rgba(255,255,255,0.30)',
             textColor: '#ecf0f1',
             tickColor: 'rgba(255,255,255,0.20)',
             tickMajorColor: 'rgba(255,255,255,0.55)',
@@ -60,8 +65,8 @@ export const SKINS = {
         },
     },
     instrument: {
-        // Fixed dark HUD — color pickers are ignored; fixedColors enforces the preset.
-        fixedColors: true,
+        // Dark HUD look by default; every color is still overridable via the pickers.
+        solidBackground: true,
         showBezel: true,
         bezelWidth: 3,
         majorTickEvery: 90,
@@ -76,7 +81,6 @@ export const SKINS = {
         cardinalLabelRadius: 0.76,
         innerHubRadius: 0.32,
         showNorthMarker: true,
-        centerSpeedReadout: true,
         light: {
             backgroundColor: '#111111',
             bezelColor: '#2a2a2a',

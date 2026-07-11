@@ -10,8 +10,8 @@ function pickColor(override, fallback) {
 /**
  * Merge skin preset, DS theme, and user color overrides into render-ready theme.
  *
- * Skins marked `fixedColors: true` (e.g. instrument) ignore user color overrides
- * so their designed look is always preserved.
+ * Every skin's palette provides the DEFAULT colors; any non-empty user override
+ * from the editor takes priority. This means all color options work on all skins.
  */
 export function resolveTheme({ skinId = 'clean', dsTheme = 'light', options = {} }) {
     const skin = SKINS[skinId] || SKINS.clean;
@@ -20,9 +20,7 @@ export function resolveTheme({ skinId = 'clean', dsTheme = 'light', options = {}
         : options.themeOverride;
     const palette = skin[themeKey] || skin.light;
 
-    // Fixed-color skins (instrument) OR colorMode === 'skin' → ignore user overrides.
-    const useCustomColors = !skin.fixedColors && options.colorMode === 'custom';
-    const pick = useCustomColors ? pickColor : (_override, fallback) => fallback;
+    const pick = pickColor;
 
     return {
         skin,
@@ -31,7 +29,10 @@ export function resolveTheme({ skinId = 'clean', dsTheme = 'light', options = {}
         backgroundColor: pick(options.backgroundColor, palette.backgroundColor || 'transparent'),
         bezelColor: pick(options.bezelColor, palette.bezelColor),
         dialColor: pick(options.dialColor, palette.dialColor),
-        innerHubColor: pick(options.innerHubColor, palette.innerHubColor || palette.dialColor),
+        dialRingColor: palette.dialRingColor || palette.tickMajorColor,
+        // Center-hub color override applies to BOTH the small hub dot and the
+        // instrument's inner hub disc, so "Center hub" works on every skin.
+        innerHubColor: pick(options.hubColor, palette.innerHubColor || palette.dialColor),
         textColor: pick(options.textColor, palette.textColor),
         tickColor: pick(options.tickColor, palette.tickColor),
         tickMajorColor: pick(options.tickMajorColor, palette.tickMajorColor),

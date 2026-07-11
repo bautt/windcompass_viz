@@ -35,9 +35,11 @@ function coerceValue(name, value, defaultValue) {
         if (SKINS[resolved]) return resolved;
     }
 
-    if (name === 'colorMode') {
-        if (value === 'custom' || value === 'skin') return value;
-        return 'skin';
+    // back-compat: old colorMode/preset string values → boolean useDefaults
+    if (name === 'useDefaults') {
+        if (value === true || value === 'true' || value === 1 || value === '1') return true;
+        if (value === 'defaults' || value === 'skin') return true;
+        return false;
     }
 
     return value;

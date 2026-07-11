@@ -23,10 +23,16 @@ function Message({ children, dark }) {
     );
 }
 
+// Keys that survive a reset — identity, mapping, and the reset flag itself.
+const PRESERVED_ON_RESET = new Set([
+    'skin', 'themeOverride', 'useDefaults',
+    ...Object.keys(FIELD_DEFAULTS),
+]);
+
 const DEFAULT_OPTIONS = {
     skin: 'clean',
     themeOverride: 'auto',
-    colorMode: 'skin',
+    useDefaults: false,
     trueNeedleType: 'classic',
     apparentNeedleType: 'slim',
     speedUnit: 'kmh',
@@ -37,11 +43,24 @@ const DEFAULT_OPTIONS = {
     showTrueWind: true,
     showTrueDirectionReadout: true,
     showTrueSpeedReadout: true,
+    showCenterSpeed: false,
     showLocation: true,
     showTemperature: false,
     showApparentWind: false,
     showDirectionLabel: true,
     animationDurationMs: 600,
+    // color overrides default to empty (inherit from skin)
+    backgroundColor: '',
+    bezelColor: '',
+    dialColor: '',
+    textColor: '',
+    tickColor: '',
+    tickMajorColor: '',
+    hubColor: '',
+    trueNeedleColor: '',
+    trueTailColor: '',
+    apparentNeedleColor: '',
+    apparentTailColor: '',
     ...FIELD_DEFAULTS,
 };
 
@@ -72,10 +91,19 @@ export function WindCompass() {
     const { dataSources, loading, options: rawOptions, dimensions, theme: dsTheme, mode } =
         useVisualizationState();
 
-    const options = useMemo(
-        () => normalizeOptions(rawOptions, DEFAULT_OPTIONS),
-        [rawOptions],
-    );
+    const options = useMemo(() => {
+        const normalized = normalizeOptions(rawOptions, DEFAULT_OPTIONS);
+        // useDefaults=true → apply all defaults, preserving only identity/mapping keys.
+        // Uncheck the box → immediately back to custom stored settings.
+        if (normalized.useDefaults === true) {
+            const reset = { ...DEFAULT_OPTIONS };
+            for (const key of PRESERVED_ON_RESET) {
+                reset[key] = normalized[key];
+            }
+            return reset;
+        }
+        return normalized;
+    }, [rawOptions]);
     const dark = dsTheme === 'dark';
     const snap = mode === 'edit';
     const animDuration = Number(options.animationDurationMs) || 600;

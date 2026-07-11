@@ -1,103 +1,137 @@
 /**
  * SVG needle shapes. Each returns JSX for a needle at 0° (pointing up).
- * length is fraction of compass radius (0–1).
+ * Coordinate system: (0,0) is the compass centre / rotation pivot.
+ *   negative-y  →  forward (tip direction)
+ *   positive-y  →  tail direction
+ * length is a fraction of compass radius (0–1); we scale against 100 px.
  */
 
 function classicNeedle(length, needleColor, tailColor) {
-    const tip = -length * 100;
-    const tail = length * 28;
-    const half = 7;
+    const tip  = -length * 100;
+    const tail =  length * 30;
+    const hw   = 7;                  // half-width at base
+    const tw   = hw * 0.45;         // tail half-width
     return (
         <>
+            {/* Arrow head – base sits exactly at y=0 (centre) */}
             <polygon
-                points={`0,${tip} ${-half},8 0,0 ${half},8`}
+                points={`0,${tip} ${-hw},0 ${hw},0`}
                 fill={needleColor}
             />
+            {/* Tail – starts at y=0 and tapers downward */}
             <polygon
-                points={`0,0 ${-half * 0.6},${tail} 0,${tail * 0.7} ${half * 0.6},${tail}`}
+                points={`0,0 ${-tw},${tail} 0,${tail * 0.75} ${tw},${tail}`}
                 fill={tailColor}
             />
         </>
     );
 }
 
-function slimNeedle(length, needleColor) {
-    const tip = -length * 100;
-    return (
-        <line
-            x1="0"
-            y1="8"
-            x2="0"
-            y2={tip}
-            stroke={needleColor}
-            strokeWidth="2.5"
-            strokeLinecap="round"
-        />
-    );
-}
-
-function barbedNeedle(length, needleColor, tailColor) {
-    const tip = -length * 100;
+function slimNeedle(length, needleColor, tailColor) {
+    const tip  = -length * 100;
+    const tail =  length * 22;
     return (
         <>
-            <line x1="0" y1="6" x2="0" y2={tip} stroke={needleColor} strokeWidth="2" />
-            <polygon points={`0,${tip} -9,${tip + 18} 0,${tip + 10} 9,${tip + 18}`} fill={needleColor} />
-            <line x1="0" y1="6" x2="0" y2={length * 22} stroke={tailColor} strokeWidth="3" strokeLinecap="round" />
+            <line
+                x1="0" y1={tail}
+                x2="0" y2={tip}
+                stroke={needleColor}
+                strokeWidth="2.5"
+                strokeLinecap="round"
+            />
+            {/* Contrasting tail cap */}
+            <line
+                x1="0" y1="0"
+                x2="0" y2={tail}
+                stroke={tailColor || needleColor}
+                strokeWidth="3"
+                strokeLinecap="round"
+                opacity="0.6"
+            />
         </>
     );
 }
 
-function diamondNeedle(length, needleColor) {
-    const tip = -length * 100;
-    const mid = -length * 35;
+function barbedNeedle(length, needleColor, tailColor) {
+    const tip    = -length * 100;
+    const tail   =  length * 24;
+    const barbY  = tip + length * 20; // barbs sit just behind tip
+    const barbW  = 10;
     return (
-        <polygon
-            points={`0,${tip} -5,${mid} 0,6 5,${mid}`}
-            fill={needleColor}
-        />
+        <>
+            {/* Main shaft from tail to tip */}
+            <line x1="0" y1={tail} x2="0" y2={tip} stroke={needleColor} strokeWidth="2" />
+            {/* Barb wings */}
+            <polygon points={`0,${tip} ${-barbW},${barbY} 0,${barbY + 6} ${barbW},${barbY}`} fill={needleColor} />
+            {/* Coloured tail */}
+            <line x1="0" y1="0" x2="0" y2={tail} stroke={tailColor} strokeWidth="3.5" strokeLinecap="round" />
+        </>
+    );
+}
+
+function diamondNeedle(length, needleColor, tailColor) {
+    const tip  = -length * 100;
+    const mid  = -length * 40;
+    const tail =  length * 22;
+    return (
+        <>
+            {/* Forward diamond */}
+            <polygon
+                points={`0,${tip} ${-6},${mid} 0,0 ${6},${mid}`}
+                fill={needleColor}
+            />
+            {/* Tail diamond */}
+            <polygon
+                points={`0,0 ${-4},${tail * 0.6} 0,${tail} ${4},${tail * 0.6}`}
+                fill={tailColor || needleColor}
+                opacity="0.7"
+            />
+        </>
     );
 }
 
 function featherNeedle(length, needleColor, tailColor) {
-    const tip = -length * 100;
+    const tip  = -length * 100;
+    const tail =  length * 22;
     return (
         <>
             <path
-                d={`M0,6 Q-4,${tip * 0.4} -2,${tip} L0,${tip + 4} L2,${tip} Q4,${tip * 0.4} 0,6`}
+                d={`M0,0 Q${-5},${tip * 0.4} ${-2},${tip} L0,${tip + 5} L${2},${tip} Q${5},${tip * 0.4} 0,0`}
                 fill={needleColor}
             />
-            <ellipse cx="0" cy={length * 18} rx="3" ry="6" fill={tailColor} />
+            {/* Tail teardrop */}
+            <ellipse cx="0" cy={tail * 0.6} rx="3.5" ry={tail * 0.45} fill={tailColor} />
         </>
     );
 }
 
 function dotLineNeedle(length, needleColor) {
-    const tip = -length * 95;
+    const tip  = -length * 95;
+    const tail =  length * 18;
     return (
         <>
-            <line x1="0" y1="0" x2="0" y2={tip} stroke={needleColor} strokeWidth="1.5" strokeDasharray="4 3" />
-            <circle cx="0" cy="0" r="4" fill={needleColor} />
+            <line x1="0" y1={tail} x2="0" y2={tip} stroke={needleColor} strokeWidth="1.5" strokeDasharray="4 3" />
+            <circle cx="0" cy="0" r="5" fill={needleColor} />
         </>
     );
 }
 
 function instrumentNeedle(length, needleColor) {
-    // tip: arrowhead apex; arrowBase: where arrowhead meets shaft
-    // tailRing: open circle at tail end
-    const tip = -length * 100;
-    const arrowH = 18;
-    const arrowW = 7;
+    const tip      = -length * 100;
+    const arrowH   = 18;
+    const arrowW   = 7;
     const arrowBase = tip + arrowH;
     const tailRingY = length * 70;
-    const ringR = 5;
-    const shaftStart = tailRingY - ringR;
+    const ringR     = 5;
+    // Shaft connects arrowhead base to just above the tail ring
+    const shaftEnd  = tailRingY - ringR;
 
     return (
         <>
-            {/* Shaft — from ring top to arrowhead base */}
+            {/* Shaft from arrowhead base down to tail ring */}
             <line
-                x1="0" y1={shaftStart}
-                x2="0" y2={arrowBase}
+                x1="0" y1={arrowBase}
+                x2="0" y2={shaftEnd}
                 stroke={needleColor}
                 strokeWidth="1.5"
                 strokeLinecap="butt"
@@ -121,20 +155,13 @@ function instrumentNeedle(length, needleColor) {
 
 export function renderNeedle(type, { length = 0.72, needleColor, tailColor }) {
     switch (type) {
-        case 'slim':
-            return slimNeedle(length, needleColor);
-        case 'barbed':
-            return barbedNeedle(length, needleColor, tailColor);
-        case 'diamond':
-            return diamondNeedle(length, needleColor);
-        case 'feather':
-            return featherNeedle(length, needleColor, tailColor);
-        case 'dot_line':
-            return dotLineNeedle(length, needleColor);
-        case 'instrument':
-            return instrumentNeedle(length, needleColor);
+        case 'slim':       return slimNeedle(length, needleColor, tailColor);
+        case 'barbed':     return barbedNeedle(length, needleColor, tailColor);
+        case 'diamond':    return diamondNeedle(length, needleColor, tailColor);
+        case 'feather':    return featherNeedle(length, needleColor, tailColor);
+        case 'dot_line':   return dotLineNeedle(length, needleColor);
+        case 'instrument': return instrumentNeedle(length, needleColor);
         case 'classic':
-        default:
-            return classicNeedle(length, needleColor, tailColor);
+        default:           return classicNeedle(length, needleColor, tailColor);
     }
 }
