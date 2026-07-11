@@ -248,7 +248,7 @@
                     [
                         {
                             "editor": "editor.checkbox",
-                            "label": "Show needle",
+                            "label": "Show true-wind needle",
                             "option": "showTrueWind"
                         }
                     ],
@@ -313,7 +313,7 @@
                     [
                         {
                             "editor": "editor.checkbox",
-                            "label": "Show needle",
+                            "label": "Show apparent-wind needle",
                             "option": "showApparentWind"
                         }
                     ],

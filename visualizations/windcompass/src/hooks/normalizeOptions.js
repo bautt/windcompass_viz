@@ -1,8 +1,21 @@
 import { SKINS } from '../themes/skins.js';
+
+/**
+ * Strip DS option keys to their bare names and coerce types.
+ *
+ * DS may deliver both a bare schema key (`showTemperature`) and a prefixed
+ * instance key (`windcompass.windcompass.showTemperature`). The prefixed
+ * instance value is the user's actual setting and MUST win, regardless of
+ * key ordering — so we apply bare keys first, then let prefixed keys override.
+ */
 export function normalizeOptions(raw = {}, defaults = {}) {
     const out = { ...defaults };
 
-    for (const [key, value] of Object.entries(raw)) {
+    const entries = Object.entries(raw);
+    const bareEntries = entries.filter(([k]) => !k.includes('.'));
+    const prefixedEntries = entries.filter(([k]) => k.includes('.'));
+
+    for (const [key, value] of [...bareEntries, ...prefixedEntries]) {
         if (value === undefined || value === null) continue;
 
         const bare = key.includes('.') ? key.split('.').pop() : key;
@@ -20,8 +33,10 @@ export function normalizeOptions(raw = {}, defaults = {}) {
 function coerceValue(name, value, defaultValue) {
     if (typeof defaultValue === 'boolean') {
         if (value === true || value === false) return value;
-        if (value === 'true' || value === 1 || value === '1') return true;
-        if (value === 'false' || value === 0 || value === '0') return false;
+        const s = String(value).trim().toLowerCase();
+        if (s === 'true' || s === '1' || s === 'yes' || s === 'on') return true;
+        if (s === 'false' || s === '0' || s === 'no' || s === 'off' || s === '') return false;
+        return defaultValue;
     }
 
     if (typeof defaultValue === 'number' && typeof value === 'string' && value !== '') {

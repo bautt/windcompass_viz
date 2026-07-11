@@ -1,11 +1,11 @@
 {
-  "title": "Wind Compass — Live Weather",
-  "description": "Three skins (Clean · Marine · Instrument), each with its own city selector. Requires index=s4c_meteo from splunk4champions2 or TA-open-meteo.",
+  "title": "Wind Compass — Demo",
+  "description": "Self-contained showcase of the Clean, Marine and Instrument skins using sample data (makeresults). Works on any Splunk instance — no index required.",
   "visualizations": {
     "viz_clean": {
       "type": "windcompass.windcompass",
-      "title": "Clean",
-      "dataSources": { "primary": "ds_wind_1" },
+      "title": "Clean — Berlin",
+      "dataSources": { "primary": "ds_berlin" },
       "options": {
         "windcompass.windcompass.skin": "clean",
         "windcompass.windcompass.showTemperature": true,
@@ -19,8 +19,8 @@
     },
     "viz_marine": {
       "type": "windcompass.windcompass",
-      "title": "Marine",
-      "dataSources": { "primary": "ds_wind_2" },
+      "title": "Marine — Vilnius",
+      "dataSources": { "primary": "ds_vilnius" },
       "options": {
         "windcompass.windcompass.skin": "marine",
         "windcompass.windcompass.showTemperature": true,
@@ -34,8 +34,8 @@
     },
     "viz_instrument": {
       "type": "windcompass.windcompass",
-      "title": "Instrument",
-      "dataSources": { "primary": "ds_wind_3" },
+      "title": "Instrument — San Francisco",
+      "dataSources": { "primary": "ds_sanfrancisco" },
       "options": {
         "windcompass.windcompass.skin": "instrument",
         "windcompass.windcompass.trueNeedleType": "instrument",
@@ -51,108 +51,41 @@
     }
   },
   "dataSources": {
-    "ds_wind_1": {
+    "ds_berlin": {
       "type": "ds.search",
-      "name": "Clean — latest wind row",
+      "name": "Berlin (sample)",
       "options": {
-        "query": "index=s4c_meteo sourcetype=open_meteo:weather:json city=\"$city1$\"\n| sort - _time\n| head 1\n| table city country wind_direction_10m wind_speed_10m temperature_2m",
-        "queryParameters": { "earliest": "-24h", "latest": "now" }
+        "query": "| makeresults\n| eval city=\"Berlin\", country=\"Germany\", wind_direction_10m=225, wind_speed_10m=18.5, temperature_2m=12.0\n| fields city country wind_direction_10m wind_speed_10m temperature_2m"
       }
     },
-    "ds_wind_2": {
+    "ds_vilnius": {
       "type": "ds.search",
-      "name": "Marine — latest wind row",
+      "name": "Vilnius (sample)",
       "options": {
-        "query": "index=s4c_meteo sourcetype=open_meteo:weather:json city=\"$city2$\"\n| sort - _time\n| head 1\n| table city country wind_direction_10m wind_speed_10m temperature_2m",
-        "queryParameters": { "earliest": "-24h", "latest": "now" }
+        "query": "| makeresults\n| eval city=\"Vilnius\", country=\"Lithuania\", wind_direction_10m=315, wind_speed_10m=11.2, temperature_2m=8.5\n| fields city country wind_direction_10m wind_speed_10m temperature_2m"
       }
     },
-    "ds_wind_3": {
+    "ds_sanfrancisco": {
       "type": "ds.search",
-      "name": "Instrument — latest wind row",
+      "name": "San Francisco (sample)",
       "options": {
-        "query": "index=s4c_meteo sourcetype=open_meteo:weather:json city=\"$city3$\"\n| sort - _time\n| head 1\n| table city country wind_direction_10m wind_speed_10m temperature_2m",
-        "queryParameters": { "earliest": "-24h", "latest": "now" }
+        "query": "| makeresults\n| eval city=\"San Francisco\", country=\"United States\", wind_direction_10m=270, wind_speed_10m=22.0, temperature_2m=16.5\n| fields city country wind_direction_10m wind_speed_10m temperature_2m"
       }
     }
   },
-  "inputs": {
-    "input_city1": {
-      "type": "input.dropdown",
-      "title": "City",
-      "options": {
-        "token": "city1",
-        "defaultValue": "Vilnius",
-        "items": [
-          { "label": "Berlin", "value": "Berlin" },
-          { "label": "Frankfurt", "value": "Frankfurt" },
-          { "label": "Krakow", "value": "Krakow" },
-          { "label": "New York", "value": "New York" },
-          { "label": "Riga", "value": "Riga" },
-          { "label": "San Francisco", "value": "San Francisco" },
-          { "label": "Sydney", "value": "Sydney" },
-          { "label": "Tallinn", "value": "Tallinn" },
-          { "label": "Vilnius", "value": "Vilnius" },
-          { "label": "Warsaw", "value": "Warsaw" }
-        ]
-      }
-    },
-    "input_city2": {
-      "type": "input.dropdown",
-      "title": "City",
-      "options": {
-        "token": "city2",
-        "defaultValue": "Berlin",
-        "items": [
-          { "label": "Berlin", "value": "Berlin" },
-          { "label": "Frankfurt", "value": "Frankfurt" },
-          { "label": "Krakow", "value": "Krakow" },
-          { "label": "New York", "value": "New York" },
-          { "label": "Riga", "value": "Riga" },
-          { "label": "San Francisco", "value": "San Francisco" },
-          { "label": "Sydney", "value": "Sydney" },
-          { "label": "Tallinn", "value": "Tallinn" },
-          { "label": "Vilnius", "value": "Vilnius" },
-          { "label": "Warsaw", "value": "Warsaw" }
-        ]
-      }
-    },
-    "input_city3": {
-      "type": "input.dropdown",
-      "title": "City",
-      "options": {
-        "token": "city3",
-        "defaultValue": "San Francisco",
-        "items": [
-          { "label": "Berlin", "value": "Berlin" },
-          { "label": "Frankfurt", "value": "Frankfurt" },
-          { "label": "Krakow", "value": "Krakow" },
-          { "label": "New York", "value": "New York" },
-          { "label": "Riga", "value": "Riga" },
-          { "label": "San Francisco", "value": "San Francisco" },
-          { "label": "Sydney", "value": "Sydney" },
-          { "label": "Tallinn", "value": "Tallinn" },
-          { "label": "Vilnius", "value": "Vilnius" },
-          { "label": "Warsaw", "value": "Warsaw" }
-        ]
-      }
-    }
-  },
+  "inputs": {},
   "layout": {
     "type": "absolute",
     "options": {
       "width": 1320,
-      "height": 640,
+      "height": 560,
       "backgroundColor": "#12141a"
     },
     "globalInputs": [],
     "structure": [
-      { "item": "input_city1", "type": "input", "position": { "x": 15,  "y": 15, "w": 420, "h": 64 } },
-      { "item": "input_city2", "type": "input", "position": { "x": 450, "y": 15, "w": 420, "h": 64 } },
-      { "item": "input_city3", "type": "input", "position": { "x": 885, "y": 15, "w": 420, "h": 64 } },
-      { "item": "viz_clean",      "type": "block", "position": { "x": 15,  "y": 90, "w": 420, "h": 530 } },
-      { "item": "viz_marine",     "type": "block", "position": { "x": 450, "y": 90, "w": 420, "h": 530 } },
-      { "item": "viz_instrument", "type": "block", "position": { "x": 885, "y": 90, "w": 420, "h": 530 } }
+      { "item": "viz_clean",      "type": "block", "position": { "x": 15,  "y": 20, "w": 420, "h": 520 } },
+      { "item": "viz_marine",     "type": "block", "position": { "x": 450, "y": 20, "w": 420, "h": 520 } },
+      { "item": "viz_instrument", "type": "block", "position": { "x": 885, "y": 20, "w": 420, "h": 520 } }
     ]
   }
 }

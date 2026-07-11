@@ -140,10 +140,11 @@ export function WindCompass() {
         ? normalizeDegrees(displayRow.windDirection)
         : 0;
 
-    const apparentWindTarget =
-        displayRow && displayRow.apparentWindDirection != null
-            ? normalizeDegrees(displayRow.apparentWindDirection)
-            : 0;
+    const hasApparent = !!displayRow && displayRow.apparentWindDirection != null;
+
+    const apparentWindTarget = hasApparent
+        ? normalizeDegrees(displayRow.apparentWindDirection)
+        : 0;
 
     const trueWindAngle = useAngleAnimator(trueWindTarget, {
         durationMs: animDuration,
@@ -154,7 +155,7 @@ export function WindCompass() {
     const apparentWindAngle = useAngleAnimator(apparentWindTarget, {
         durationMs: animDuration,
         snap,
-        enabled: !!displayRow && options.showApparentWind,
+        enabled: hasApparent && options.showApparentWind,
     });
 
     const dialRotation = 0;
@@ -199,7 +200,7 @@ export function WindCompass() {
                     data={displayRow}
                     trueWindAngle={trueWindAngle}
                     apparentWindAngle={
-                        options.showApparentWind ? apparentWindAngle : null
+                        options.showApparentWind && hasApparent ? apparentWindAngle : null
                     }
                 />
             </div>

@@ -7,21 +7,39 @@
  */
 
 function classicNeedle(length, needleColor, tailColor) {
-    const tip  = -length * 100;
-    const tail =  length * 30;
-    const hw   = 7;                  // half-width at base
-    const tw   = hw * 0.45;         // tail half-width
+    // Traditional magnetic-compass needle: a bold two-tone lozenge that is
+    // widest at the pivot, with a long pointing (north) half, a shorter tail
+    // half, and a small mounted pivot cap.
+    const tip    = -length * 100;   // pointing tip
+    const tail   =  length * 72;    // tail tip (shorter than the pointer)
+    const hw     = 8.5;             // half-width at the pivot (widest point)
+    const capR   = 3.6;             // pivot cap radius
     return (
         <>
-            {/* Arrow head – base sits exactly at y=0 (centre) */}
+            {/* Pointing (north) half */}
             <polygon
                 points={`0,${tip} ${-hw},0 ${hw},0`}
                 fill={needleColor}
             />
-            {/* Tail – starts at y=0 and tapers downward */}
+            {/* Tail (south) half */}
             <polygon
-                points={`0,0 ${-tw},${tail} 0,${tail * 0.75} ${tw},${tail}`}
+                points={`${-hw},0 ${hw},0 0,${tail}`}
                 fill={tailColor}
+            />
+            {/* Subtle center spine highlight for depth */}
+            <line
+                x1="0" y1={tip}
+                x2="0" y2={tail}
+                stroke={needleColor}
+                strokeWidth="0.75"
+                strokeOpacity="0.35"
+            />
+            {/* Mounted pivot cap */}
+            <circle
+                cx="0" cy="0" r={capR}
+                fill={needleColor}
+                stroke={tailColor}
+                strokeWidth="1.2"
             />
         </>
     );
