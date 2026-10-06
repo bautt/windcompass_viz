@@ -74,9 +74,11 @@ City (required), country (optional, disambiguates same-named cities), and refres
 One row with:
 
 * Wind direction — numeric, 0–360° (meteorological convention: direction wind comes from)
-* Wind speed — numeric (unit selected in viz options)
+* Wind speed — numeric, in km/h
 
-Location, country, temperature, wind gusts, weather code, and is-day can also be mapped in the Search: field mapping section.
+Location, country, temperature (°C), wind gusts, weather code, and is-day can also be mapped in the Search: field mapping section.
+
+Speeds are km/h and temperatures °C at the input; the Speed unit and Temperature unit options are display conversions applied on top of those, so convert in SPL if your source uses something else.
 
 **Demo dashboard**
 
@@ -92,6 +94,34 @@ Report issues on GitHub: https://github.com/bautt/windcompass_viz/issues
 ```
 
 ---
+
+## Release notes (v0.5.1)
+
+```
+* Fixed: choosing the default red in the "Needle color" picker had no effect —
+  the schema default did not match the app's, so the skin's own needle colour
+  was used instead. On the Instrument dark skin that rendered a white needle
+  for a user who had explicitly picked red.
+* Fixed: compass cardinal labels (N/E/S/W) were sized from the panel's pixel
+  width inside an already-scaling SVG, so they grew to a third of the dial
+  radius on large panels and collided with the needle, while shrinking to
+  near-invisible on small ones.
+* Fixed: a non-numeric value in an optional, auto-detected column (for example
+  a text column named "temp" or "gusts") blanked the whole panel. Unusable
+  optional values are now ignored and the wind still renders.
+* Fixed: "Speed in center hub" did nothing unless "Speed readout" was also on,
+  so turning the panel readout off and the hub on hid the speed entirely.
+* Fixed: entering 0 in "Animation (ms)" fell back to 600 ms instead of
+  disabling the animation.
+* Fixed: status and error messages ignored the Theme option, so Theme = Light
+  on a dark dashboard left the text in the wrong palette.
+* Added: "Wind gusts" field mapping, which existed in the app but had no
+  control in the editor.
+* Changed: documented that search mode expects km/h and °C at the input, with
+  the unit options being display conversions on top. Editor labels now say so.
+* Changed: the browser cache records a schema version, so an entry written by
+  a different app version is discarded rather than rendered.
+```
 
 ## Release notes (v0.5.0)
 

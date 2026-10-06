@@ -1,8 +1,10 @@
 /**
- * Recognized field aliases (auto-detected when explicit mapping is unset or empty).
+ * Recognized field aliases, used when no explicit mapping is set — and also as a
+ * fallback when a mapped column is absent from the result or empty in the first
+ * row, so a typo'd mapping degrades to auto-detection instead of an error.
  *
- * Required (one row): wind direction (0–360°) and wind speed (numeric).
- * Optional: location, temperature, gusts, country.
+ * Required (one row): wind direction (0–360°) and wind speed (numeric, km/h).
+ * Optional: location, country, temperature (°C), gusts, weather code, is-day.
  */
 
 export const REQUIRED_FIELDS = {

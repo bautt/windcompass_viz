@@ -134,10 +134,13 @@ export function parseSearchData(data, options = {}) {
         options.fieldIsDay,
     );
 
-    const temperature = parseNumber(tempField.value, tempField.field);
-    const windGusts = parseNumber(gustField.value, gustField.field);
-    // Unlike the required fields these are cosmetic, so a bad value is dropped
-    // rather than failing the whole panel.
+    // Every optional field is resolved by alias, so a search that merely happens
+    // to contain a string column named "temp" or "gusts" must not take the panel
+    // down with it — especially since the value may not even be displayed. Drop
+    // what cannot be used and still render the wind, which is the point of the
+    // visualization. Only the two required fields throw.
+    const temperature = finiteOrNull(tempField.value);
+    const windGusts = finiteOrNull(gustField.value);
     const weatherCode = finiteOrNull(weatherCodeField.value);
     const isDay = finiteOrNull(isDayField.value);
 

@@ -130,31 +130,40 @@ function rowMajor(fields, rows) {
     );
 }
 
-// Optional fields are cosmetic, so a bad value is dropped rather than failing
-// the whole panel.
+// Optional fields are resolved by alias, so a search that merely happens to
+// contain a string column named "temp" or "gusts" must not blank the panel. A
+// value that cannot be used is dropped and the wind still renders.
 {
     const row = parseSearchData(
         columnar(
-            ['wind_direction', 'wind_speed', 'weather_code', 'is_day'],
-            [[90], [5], ['not-a-code'], ['maybe']],
+            ['wind_direction', 'wind_speed', 'temp', 'gusts', 'weather_code', 'is_day'],
+            [[90], [5], ['warm'], ['gale'], ['not-a-code'], ['maybe']],
         ),
     );
+    assert.equal(row.windDirection, 90, 'the required fields still render');
+    assert.equal(row.windSpeed, 5);
+    assert.equal(row.temperature, null);
+    assert.equal(row.windGusts, null);
     assert.equal(row.weatherCode, null);
     assert.equal(row.isDay, null);
-    assert.equal(row.windDirection, 90);
 }
 
-// A non-numeric temperature is a required-field-style error because it is
-// rendered as a number; absent is fine.
+// Absent optional fields are null, not zero.
 {
-    assert.throws(
-        () => parseSearchData(columnar(['wind_direction', 'wind_speed', 'temperature'], [[90], [5], ['warm']])),
-        /"temperature" must be numeric/,
-    );
     const row = parseSearchData(columnar(['wind_direction', 'wind_speed'], [[90], [5]]));
     assert.equal(row.temperature, null);
     assert.equal(row.windGusts, null);
     assert.equal(row.location, null);
+    assert.equal(row.weatherCode, null);
+}
+
+// A usable optional value is still parsed, including negative temperatures.
+{
+    const row = parseSearchData(
+        columnar(['wind_direction', 'wind_speed', 'temperature', 'wind_gusts'], [[90], [5], [-7.5], [42]]),
+    );
+    assert.equal(row.temperature, -7.5);
+    assert.equal(row.windGusts, 42);
 }
 
 // Location and country are joined for display, and country alone is not shown.

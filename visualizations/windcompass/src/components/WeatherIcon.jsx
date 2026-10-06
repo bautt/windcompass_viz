@@ -1,10 +1,14 @@
 /**
- * Small, monochrome-friendly SVG icon set for the resolved weather
- * condition keys from `data/weatherCondition.js`. Deliberately simple
- * shapes (no external image assets) so they stay crisp at badge size and
- * recolor cleanly against any skin/theme.
+ * Small SVG icon set for the resolved weather condition keys from
+ * `data/weatherCondition.js`. Deliberately simple shapes (no external image
+ * assets) so they stay crisp at badge size.
+ *
+ * Two-tone on purpose: cloud shapes take the caller's `color` so they sit
+ * correctly on any skin, while the elements that carry meaning through colour —
+ * sun, moon, raindrops, snow, lightning — keep fixed hues. A theme-coloured sun
+ * stops reading as "sun".
  */
-function Sun({ size, color }) {
+function Sun({ size }) {
     return (
         <svg viewBox="0 0 24 24" width={size} height={size} role="presentation">
             <circle cx="12" cy="12" r="5" fill="#f5a623" />
@@ -22,7 +26,7 @@ function Sun({ size, color }) {
     );
 }
 
-function Moon({ size, color }) {
+function Moon({ size }) {
     return (
         <svg viewBox="0 0 24 24" width={size} height={size} role="presentation">
             <path
@@ -84,7 +88,7 @@ function Fog({ size, color }) {
     );
 }
 
-function RainDrops({ color, count }) {
+function RainDrops({ count }) {
     const xs = count === 2 ? [9, 15] : [7.5, 12, 16.5];
     return xs.map((x) => (
         <path
@@ -99,7 +103,7 @@ function Rain({ size, color }) {
     return (
         <svg viewBox="0 0 24 24" width={size} height={size} role="presentation">
             <CloudShape fill={color} opacity={0.85} />
-            <RainDrops color={color} count={3} />
+            <RainDrops count={3} />
         </svg>
     );
 }
@@ -108,7 +112,7 @@ function Drizzle({ size, color }) {
     return (
         <svg viewBox="0 0 24 24" width={size} height={size} role="presentation">
             <CloudShape fill={color} opacity={0.85} />
-            <RainDrops color={color} count={2} />
+            <RainDrops count={2} />
         </svg>
     );
 }

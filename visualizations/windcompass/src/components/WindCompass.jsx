@@ -98,9 +98,13 @@ export function WindCompass() {
         () => normalizeOptions(rawOptions, DEFAULT_OPTIONS),
         [JSON.stringify(rawOptions)],
     );
-    const dark = dsTheme === 'dark';
     const snap = mode === 'edit';
-    const animDuration = Number(options.animationDurationMs) || 600;
+    // 0 is a legitimate choice meaning "snap instantly", which useAngleAnimator
+    // already handles — `|| 600` silently turned it back into the default.
+    const rawAnimDuration = Number(options.animationDurationMs);
+    const animDuration = Number.isFinite(rawAnimDuration) && rawAnimDuration >= 0
+        ? rawAnimDuration
+        : 600;
     const isLiveMode = options.dataMode === 'live';
 
     // Search-mode path — always called (Rules of Hooks), cheap when unused.
@@ -133,6 +137,10 @@ export function WindCompass() {
         () => resolveTheme({ skinId, dsTheme, options }),
         [skinId, options, dsTheme],
     );
+    // resolveTheme applies themeOverride on top of the Dashboard Studio theme,
+    // so status text has to follow its verdict rather than dsTheme directly —
+    // otherwise Theme = Light on a dark dashboard leaves the message unreadable.
+    const dark = theme.themeKey === 'dark';
 
     const displayRow = isLiveMode
         ? live.row

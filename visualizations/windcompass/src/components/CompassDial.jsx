@@ -150,7 +150,11 @@ export function CompassDial({
     const labelR = skin.cardinalLabelRadius
         ? radius * skin.cardinalLabelRadius
         : radius + 28;
-    const fontSize = Math.max(11, size * 0.045);
+    // Constant in viewBox units, like every other text size here. Deriving it
+    // from the pixel `size` scaled it twice, because the viewBox already scales
+    // the whole drawing: cardinals grew from 7% of the dial radius on a small
+    // panel to 34% on a large one, where they collided with the needle.
+    const fontSize = 18;
     const innerHubR = skin.innerHubRadius ? radius * skin.innerHubRadius : null;
     // User's explicit choice takes priority; otherwise fall back to the skin's
     // default needle, then a global default.
@@ -266,9 +270,11 @@ export function CompassDial({
                 )}
             </g>
 
-            {isOptionEnabled(options.showTrueSpeedReadout) &&
-                isOptionEnabled(options.showCenterSpeed) &&
-                data && (
+            {/* Gated on showCenterSpeed alone. Also requiring showTrueSpeedReadout
+                meant that turning the panel readout off and the hub on hid the
+                speed entirely, since ReadoutPanel suppresses its own speed
+                whenever the hub is enabled. */}
+            {isOptionEnabled(options.showCenterSpeed) && data && (
                 <CenterSpeedReadout
                     cx={cx}
                     cy={cy}

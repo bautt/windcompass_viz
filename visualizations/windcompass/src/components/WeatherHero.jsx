@@ -1,16 +1,9 @@
-import { formatSpeed } from '../data/formatters.js';
+import { formatSpeed, formatTemp } from '../data/formatters.js';
 import { degreesToCompass } from '../data/compassRose.js';
 import { resolveWeatherCondition } from '../data/weatherCondition.js';
 import { WeatherIcon } from './WeatherIcon.jsx';
 import { WindArrow } from './WindArrow.jsx';
 import { isOptionEnabled } from '../hooks/normalizeOptions.js';
-
-function formatTemp(tempC, unitKey) {
-    if (unitKey === 'f') {
-        return `${((tempC * 9) / 5 + 32).toFixed(1)}°F`;
-    }
-    return `${tempC.toFixed(1)}°C`;
-}
 
 /**
  * Weather-first alternative to the dial: a centered card with a large
@@ -22,7 +15,7 @@ export function WeatherHero({ data, options, theme, size }) {
     const condition = resolveWeatherCondition(data.weatherCode, data.isDay);
     const iconSize = Math.max(48, Math.min(size * 0.3, 140));
     const showIcon = isOptionEnabled(options.showWeatherCondition) && !!condition;
-    const showTemp = isOptionEnabled(options.showTemperature) && data.temperature !== null;
+    const showTemp = isOptionEnabled(options.showTemperature) && data.temperature != null;
     const showDirection = isOptionEnabled(options.showTrueDirectionReadout);
     const showSpeed = isOptionEnabled(options.showTrueSpeedReadout);
     const showCompassLabel = isOptionEnabled(options.showDirectionLabel);

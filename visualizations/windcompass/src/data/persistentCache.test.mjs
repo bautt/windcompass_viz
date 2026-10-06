@@ -89,4 +89,44 @@ function fakeStorage({ throwOnWrite = false } = {}) {
     delete globalThis.localStorage;
 }
 
+// Cached values are whole row objects that go straight to render, so an entry
+// written by another version of the app must never be served — it could be
+// missing a field the current renderer expects.
+{
+    const store = fakeStorage();
+    globalThis.localStorage = store;
+    cacheClear();
+
+    const t0 = 2_000_000;
+    const full = 'windcompass:fc:1.000,2.000';
+
+    store.setItem(full, JSON.stringify({ v: 999, at: t0, value: { stale: true } }));
+    assert.equal(
+        cacheRead('fc:1.000,2.000', { maxAgeMs: 60_000, now: t0 }),
+        null,
+        'a foreign cache version must not be served',
+    );
+    assert.equal(
+        store.getItem(full),
+        null,
+        'the rejected entry is removed rather than re-read on every mount',
+    );
+
+    // Entries predating versioning have no `v` at all and are rejected too.
+    store.setItem(full, JSON.stringify({ at: t0, value: { old: true } }));
+    assert.equal(cacheRead('fc:1.000,2.000', { maxAgeMs: 60_000, now: t0 }), null);
+
+    // The current writer stamps a version that its own reader accepts.
+    cacheClear();
+    cacheWrite('fc:1.000,2.000', { windSpeed: 7 }, { now: t0 });
+    assert.deepEqual(
+        cacheRead('fc:1.000,2.000', { maxAgeMs: 60_000, now: t0 + 100 }),
+        { windSpeed: 7 },
+    );
+    assert.equal(JSON.parse(store.getItem(full)).v, 1, 'entries carry an explicit version');
+
+    cacheClear();
+    delete globalThis.localStorage;
+}
+
 console.log('persistentCache.test.mjs: all assertions passed');

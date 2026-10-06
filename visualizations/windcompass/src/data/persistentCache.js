@@ -4,7 +4,7 @@
  * Open-Meteo's free tier is rate limited, and every dashboard reload otherwise
  * repeats the same lookups from scratch. Persisting results across reloads is
  * what keeps a multi-panel dashboard well clear of the limit:
- *   - geocoding results never change, so they are cached for weeks
+ *   - geocoding results never change, so they are cached for 30 days
  *   - current conditions are cached for minutes (see resolveMaxReadingAgeMs in
  *     hooks/useLiveWeather.js for the window and why it is safe), which makes a
  *     reload nearly free
@@ -18,6 +18,14 @@
  */
 
 const KEY_PREFIX = 'windcompass:';
+
+/**
+ * Stamped into every entry and required to match on read. Cached values are
+ * whole row objects that go straight to render, so an entry written by a
+ * different version of the app could be missing a field the renderer now
+ * expects. Bump this whenever a cached shape changes.
+ */
+const CACHE_VERSION = 1;
 
 const memory = new Map();
 
@@ -51,6 +59,10 @@ export function cacheRead(key, { maxAgeMs, kind = 'local', now = Date.now() } = 
         if (!raw) return null;
         const parsed = JSON.parse(raw);
         if (!parsed || typeof parsed.at !== 'number') return null;
+        if (parsed.v !== CACHE_VERSION) {
+            store.removeItem(full);
+            return null;
+        }
         if (now - parsed.at > maxAgeMs) {
             store.removeItem(full);
             return null;
@@ -64,7 +76,7 @@ export function cacheRead(key, { maxAgeMs, kind = 'local', now = Date.now() } = 
 
 export function cacheWrite(key, value, { kind = 'local', now = Date.now() } = {}) {
     const full = KEY_PREFIX + key;
-    const entry = { at: now, value };
+    const entry = { v: CACHE_VERSION, at: now, value };
     memory.set(full, entry);
 
     const store = storage(kind);

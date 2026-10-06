@@ -1,14 +1,7 @@
-import { formatSpeed } from '../data/formatters.js';
+import { formatSpeed, formatTemp } from '../data/formatters.js';
 import { formatDirection } from '../data/compassRose.js';
 import { isOptionEnabled } from '../hooks/normalizeOptions.js';
 import { WindArrow } from './WindArrow.jsx';
-
-function formatTemp(tempC, unitKey) {
-    if (unitKey === 'f') {
-        return `${((tempC * 9) / 5 + 32).toFixed(1)}°F`;
-    }
-    return `${tempC.toFixed(1)}°C`;
-}
 
 /**
  * Compact readouts shown alongside the compass dial. Shares the same wind
@@ -20,7 +13,7 @@ export function ReadoutPanel({ data, options, theme }) {
     const showLocation = isOptionEnabled(options.showLocation) && !!data.location;
     const showDirection = isOptionEnabled(options.showTrueDirectionReadout);
     const showSpeed = isOptionEnabled(options.showTrueSpeedReadout) && !isOptionEnabled(options.showCenterSpeed);
-    const showTemp = isOptionEnabled(options.showTemperature) && data.temperature !== null;
+    const showTemp = isOptionEnabled(options.showTemperature) && data.temperature != null;
     const showWind = showDirection || showSpeed;
 
     if (!showLocation && !showTemp && !showWind) return null;

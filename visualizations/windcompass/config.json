@@ -57,8 +57,8 @@
             "tickColor": { "type": "string", "default": "" },
             "tickMajorColor": { "type": "string", "default": "" },
             "hubColor": { "type": "string", "default": "" },
-            "trueNeedleColor": { "type": "string", "default": "#e74c3c" },
-            "trueTailColor": { "type": "string", "default": "#c0392b" },
+            "trueNeedleColor": { "type": "string", "default": "" },
+            "trueTailColor": { "type": "string", "default": "" },
             "showCardinals": { "type": "boolean", "default": true },
             "showMajorTicks": { "type": "boolean", "default": true },
             "showMinorTicks": { "type": "boolean", "default": true },
@@ -416,7 +416,7 @@
                     [
                         {
                             "editor": "editor.text",
-                            "label": "Wind speed (required)",
+                            "label": "Wind speed (required, km/h)",
                             "option": "fieldWindSpeed"
                         }
                     ],
@@ -437,8 +437,15 @@
                     [
                         {
                             "editor": "editor.text",
-                            "label": "Temperature",
+                            "label": "Temperature (°C)",
                             "option": "fieldTemperature"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Wind gusts (km/h, weather-only layout)",
+                            "option": "fieldWindGusts"
                         }
                     ],
                     [

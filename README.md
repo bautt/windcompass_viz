@@ -138,20 +138,37 @@ Set **Data source → Mode** to **Search** and attach a search returning one row
 | Field | Default name | Type | Description |
 |-------|--------------|------|-------------|
 | **Wind direction** | `wind_direction` | 0–360° | Direction wind comes from (meteorological) |
-| **Wind speed** | `wind_speed` | number | Speed value (unit via **Speed unit** option) |
+| **Wind speed** | `wind_speed` | number, **km/h** | See units below |
 
 Field names are configurable under **Search: field mapping** in the Dashboard Studio Setup panel. Common aliases are auto-detected (e.g. `wind_direction_10m`, `wind_speed_10m`).
 
+### Units in search mode
+
+Your search must supply **km/h** for speeds and **°C** for temperature. The
+**Speed unit** and **Temperature unit** options are *display* conversions
+applied on top of those base units — they do not tell the app what your data is
+in. Feeding knots and selecting "Knots" divides your value by 1.852.
+
+Convert in SPL if your source differs:
+
+```spl
+| eval wind_speed = wind_speed_knots * 1.852, temperature = (temperature_f - 32) * 5 / 9
+```
+
 ### Optional fields (search mode)
 
-| Field | Default name |
-|-------|--------------|
-| Location | `location` |
-| Country | `country` |
-| Temperature | `temperature` |
-| Wind gusts | `wind_gusts` |
-| Weather code (WMO) | `weather_code` |
-| Is day (0/1) | `is_day` |
+| Field | Default name | Type |
+|-------|--------------|------|
+| Location | `location` | text |
+| Country | `country` | text (appended to location) |
+| Temperature | `temperature` | number, **°C** |
+| Wind gusts | `wind_gusts` | number, km/h (shown only in the weather-only layout) |
+| Weather code (WMO) | `weather_code` | number |
+| Is day (0/1) | `is_day` | 0 or 1 |
+
+A value that is not usable in an optional field is ignored rather than failing
+the panel, so a search that happens to contain a text column named `temp` still
+renders the wind.
 
 ## Install
 

@@ -95,7 +95,3 @@ export async function geocodeCity(city, country, { signal } = {}) {
     cacheWrite(`geo:${key}`, place);
     return place;
 }
-
-export function clearGeocodeCache() {
-    cache.clear();
-}

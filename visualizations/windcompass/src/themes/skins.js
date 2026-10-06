@@ -114,10 +114,6 @@ export const SKINS = {
     },
 };
 
-export const SKIN_IDS = Object.keys(SKINS);
-
-export const NEEDLE_TYPES = ['clean', 'classic', 'slim', 'barbed', 'diamond', 'feather', 'dot_line', 'instrument'];
-
 export const SPEED_UNITS = {
     kmh: { label: 'km/h', factor: 1 },
     ms: { label: 'm/s', factor: 1 / 3.6 },
