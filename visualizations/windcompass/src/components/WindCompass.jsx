@@ -4,13 +4,16 @@ import { FIELD_DEFAULTS } from '../data/fieldAliases.js';
 import { isDataPending } from '../data/dataLoading.js';
 import { hasDataRows, parseSearchData } from '../data/parseSearchData.js';
 import { useAngleAnimator } from '../animation/useAngleAnimator.js';
+import { useLiveWeather } from '../hooks/useLiveWeather.js';
 import { resolveTheme } from '../themes/resolveTheme.js';
 import { SKINS } from '../themes/skins.js';
-import { normalizeOptions } from '../hooks/normalizeOptions.js';
+import { normalizeOptions, isOptionEnabled } from '../hooks/normalizeOptions.js';
 import { useVisualizationState } from '../hooks/useVisualizationState.js';
 import { normalizeDegrees } from '../data/windAngles.js';
 import { CompassDial } from './CompassDial.jsx';
 import { ReadoutPanel } from './ReadoutPanel.jsx';
+import { WeatherConditionBadge } from './WeatherConditionBadge.jsx';
+import { WeatherHero } from './WeatherHero.jsx';
 
 function Message({ children, dark }) {
     const color = dark ? '#c3cbd4' : '#3a4550';
@@ -24,6 +27,12 @@ function Message({ children, dark }) {
 }
 
 const DEFAULT_OPTIONS = {
+    // "live" needs zero setup (city/country, Open-Meteo); "search" reads
+    // dataSources.primary through the field-mapping options below.
+    dataMode: 'live',
+    city: 'Berlin',
+    country: '',
+    refreshSec: 300,
     skin: 'clean',
     themeOverride: 'auto',
     trueNeedleType: '',
@@ -39,9 +48,14 @@ const DEFAULT_OPTIONS = {
     showLocation: true,
     showTemperature: false,
     showDirectionLabel: true,
+    showWeatherCondition: true,
+    showCompass: true,
     animationDurationMs: 600,
+    readoutPosition: 'bottom',
+    showFrame: false,
     // color overrides default to empty (inherit from skin)
     backgroundColor: '',
+    frameColor: '',
     bezelColor: '',
     dialColor: '',
     textColor: '',
@@ -53,7 +67,7 @@ const DEFAULT_OPTIONS = {
     ...FIELD_DEFAULTS,
 };
 
-function useParseResult(pending, dataSources, options) {
+function useSearchParseResult(pending, dataSources, options) {
     return useMemo(() => {
         if (pending) {
             return { status: 'pending' };
@@ -87,20 +101,31 @@ export function WindCompass() {
     const dark = dsTheme === 'dark';
     const snap = mode === 'edit';
     const animDuration = Number(options.animationDurationMs) || 600;
+    const isLiveMode = options.dataMode === 'live';
+
+    // Search-mode path — always called (Rules of Hooks), cheap when unused.
     const pending = isDataPending(dataSources, loading);
-
-    const parseResult = useParseResult(pending, dataSources, options);
-    const lastOkRowRef = useRef(null);
-
+    const searchResult = useSearchParseResult(pending, dataSources, options);
+    const lastOkSearchRowRef = useRef(null);
     useEffect(() => {
-        if (parseResult.status === 'ok') {
-            lastOkRowRef.current = parseResult.row;
+        if (searchResult.status === 'ok') {
+            lastOkSearchRowRef.current = searchResult.row;
         }
-    }, [parseResult]);
+    }, [searchResult]);
+
+    // Live-mode path — `enabled` gates the actual fetch/poll, so switching
+    // dataMode to "search" fully stops network activity rather than just
+    // ignoring the result.
+    const live = useLiveWeather({
+        city: options.city,
+        country: options.country,
+        refreshSec: options.refreshSec,
+        enabled: isLiveMode,
+    });
 
     useEffect(() => {
         VisualizationAPI.clearError();
-    }, [parseResult, pending]);
+    }, [searchResult, pending, live.status]);
 
     const skinId = SKINS[options.skin] ? options.skin : 'clean';
 
@@ -109,12 +134,13 @@ export function WindCompass() {
         [skinId, options, dsTheme],
     );
 
-    const displayRow =
-        parseResult.status === 'ok'
-            ? parseResult.row
-            : pending
-              ? lastOkRowRef.current
-              : null;
+    const displayRow = isLiveMode
+        ? live.row
+        : searchResult.status === 'ok'
+          ? searchResult.row
+          : pending
+            ? lastOkSearchRowRef.current
+            : null;
 
     const trueWindTarget = displayRow
         ? normalizeDegrees(displayRow.windDirection)
@@ -126,15 +152,29 @@ export function WindCompass() {
         enabled: !!displayRow,
     });
 
-    const dialRotation = 0;
-
     const { width, height } = dimensions;
     const size = Math.max(
         160,
         Math.min(width || 400, (height || width || 400) * 0.85),
     );
 
-    if (parseResult.status === 'empty') {
+    if (!displayRow) {
+        if (isLiveMode) {
+            if (live.status === 'error') {
+                return <Message dark={dark}>{live.error}</Message>;
+            }
+            return (
+                <Message dark={dark}>
+                    Loading live wind for {options.city || '…'}
+                    {options.country ? `, ${options.country}` : ''}…
+                </Message>
+            );
+        }
+
+        if (searchResult.status === 'error') {
+            return <Message dark={dark}>{searchResult.message}</Message>;
+        }
+
         return (
             <Message dark={dark}>
                 No data. Provide one row with required fields{' '}
@@ -144,38 +184,46 @@ export function WindCompass() {
         );
     }
 
-    if (parseResult.status === 'error') {
-        return (
-            <Message dark={dark}>
-                {parseResult.message}
-            </Message>
-        );
-    }
+    const showCompass = isOptionEnabled(options.showCompass);
+    const frameColor = isOptionEnabled(options.showFrame) ? options.frameColor || theme.textColor : '';
 
     return (
         <div
             className="wind-compass"
-            style={{ color: theme.textColor, background: theme.backgroundColor || 'transparent' }}
+            style={{
+                color: theme.textColor,
+                background: theme.backgroundColor || 'transparent',
+                ...(frameColor
+                    ? { border: `2px solid ${frameColor}`, borderRadius: '18px' }
+                    : null),
+            }}
         >
-            <div className="wind-compass__dial-wrap">
-                <CompassDial
-                    key={skinId}
-                    skinId={skinId}
-                    theme={theme}
-                    dialRotation={dialRotation}
-                    size={size}
-                    options={options}
-                    data={displayRow}
-                    trueWindAngle={trueWindAngle}
-                />
-            </div>
-            {displayRow ? (
-                <ReadoutPanel
-                    data={displayRow}
-                    options={options}
-                    theme={theme}
-                />
-            ) : null}
+            {showCompass ? (
+                <>
+                    <div className="wind-compass__dial-wrap">
+                        <CompassDial
+                            key={skinId}
+                            skinId={skinId}
+                            theme={theme}
+                            dialRotation={0}
+                            size={size}
+                            options={options}
+                            data={displayRow}
+                            trueWindAngle={trueWindAngle}
+                        />
+                    </div>
+                    {isOptionEnabled(options.showWeatherCondition) && (
+                        <WeatherConditionBadge row={displayRow} theme={theme} />
+                    )}
+                    <ReadoutPanel
+                        data={displayRow}
+                        options={options}
+                        theme={theme}
+                    />
+                </>
+            ) : (
+                <WeatherHero data={displayRow} options={options} theme={theme} size={size} />
+            )}
         </div>
     );
 }

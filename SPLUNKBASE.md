@@ -16,7 +16,7 @@ Wind Compass
 ## Short description (≈250 characters)
 
 ```
-Animated wind compass for Splunk Dashboard Studio. Display wind direction, speed, and optional temperature on a configurable compass dial with Clean, Marine, and Instrument skins. Requires one search row per panel.
+Animated wind compass for Splunk Dashboard Studio. Works instantly with live Open-Meteo data by city, or bind your own search. Direction, speed, temperature, and weather icon on Clean, Marine, and Instrument skins.
 ```
 
 ---
@@ -24,38 +24,48 @@ Animated wind compass for Splunk Dashboard Studio. Display wind direction, speed
 ## Long description
 
 ```
-Wind Compass is a custom visualization for Splunk Dashboard Studio (Splunk 10.4+) that turns a single search result row into an animated compass showing wind direction and speed.
+Wind Compass is a custom visualization for Splunk Dashboard Studio (Splunk 10.4+) that renders an animated compass showing wind direction, speed, and weather condition — with no search required.
+
+**Two data modes, switchable per panel**
+
+* **Live** (default): type a city and go. Real-time wind, temperature, and weather condition from the free Open-Meteo service — no index, no search, no setup.
+* **Search**: bind your own search result row for full control over the data source, with configurable field-name mapping.
 
 Three built-in skins — Clean, Marine, and Instrument — suit dashboards from minimal layouts to maritime and instrument-panel looks. Every color, tick mark, needle style, and readout can be configured in the Dashboard Studio Setup panel without editing XML.
 
 **Features**
 
+* Live mode: city/country input, auto-refresh, powered by Open-Meteo — zero data setup
+* Search mode: bind your own search, with field-name mapping for common weather schemas (e.g. Open-Meteo `wind_direction_10m`, `wind_speed_10m`, `temperature_2m`)
 * Animated wind-direction needle with smooth shortest-path rotation
+* Weather condition icon (sun, cloud, rain, snow, fog, thunderstorm, …), on by default and switchable
+* Compass dial is itself optional — switch to a weather-only "hero" layout (large icon, temperature, location, compact wind readout) when conditions matter more than the needle
 * Three compass skins: Clean, Marine, Instrument
 * Optional readouts: location, wind direction, speed (panel or center hub), temperature
 * Configurable speed units (km/h, m/s, knots, mph) and temperature units (°C, °F)
 * Eight needle styles including a dedicated Instrument needle
 * Light/dark theme support with per-color overrides
-* Field-name mapping for common weather schemas (e.g. Open-Meteo `wind_direction_10m`, `wind_speed_10m`, `temperature_2m`)
 
-**Required data**
+**Live mode data**
+
+City (required), country (optional, disambiguates same-named cities), and refresh interval (seconds, min. 60). Resolved via Open-Meteo's free geocoding and forecast APIs — see Privacy below.
+
+**Search mode data**
 
 One row with:
 
 * Wind direction — numeric, 0–360° (meteorological convention: direction wind comes from)
 * Wind speed — numeric (unit selected in viz options)
 
-**Optional fields**
-
-Location, country, temperature, and wind gusts can be mapped in the Data fields section.
+Location, country, temperature, wind gusts, weather code, and is-day can also be mapped in the Search: field mapping section.
 
 **Demo dashboard**
 
-The app ships with **Wind Compass — Demo**, a self-contained Dashboard Studio page using `| makeresults` sample data. No index or inputs are required — install the app and open the demo immediately.
+The app ships with **Wind Compass — Demo**, a self-contained Dashboard Studio page built entirely in Live mode — a dark-themed row, a light-themed row, and a compass-hidden "weather only" row — so it renders real data for anyone immediately, with no index, inputs, or search data of your own required. Switch any panel's Data source mode to Search if you'd rather bind your own data.
 
 **Privacy**
 
-This app does not collect, store, or transmit data outside your Splunk deployment. It renders only the search results you attach to the visualization panel.
+This app does not collect, store, or transmit telemetry. In Search mode, it renders only the search results you attach to the panel and makes no external network calls. In Live mode, your browser calls Open-Meteo's free geocoding/forecast APIs directly to resolve the city you configure; no API key or Splunk data is sent to Open-Meteo. See THIRD_PARTY_NOTICES.md for details.
 
 **Support**
 
@@ -63,6 +73,23 @@ Report issues on GitHub: https://github.com/bautt/windcompass_viz/issues
 ```
 
 ---
+
+## Release notes (v0.4.0)
+
+```
+* New: Live data mode — set a city and get real-time wind, temperature, and
+  weather condition from Open-Meteo, with no search or index required
+  (switchable back to Search mode per panel)
+* New: Weather condition icon (sun, cloud, rain, snow, fog, thunderstorm, …),
+  on by default, works in both Live and Search mode
+* New: Compass dial is now optional — a weather-only "hero" view (icon,
+  temperature, location, compact wind readout) for dashboards that want
+  conditions front and center rather than a needle
+* New: Data source editor group (mode, city, country, refresh interval)
+* Demo dashboard now shows all variants side by side (live, search dark,
+  search light, weather-only)
+* Fully backward compatible — existing Search-mode panels are unaffected
+```
 
 ## Release notes (v0.3.7)
 
@@ -85,9 +112,9 @@ Initial Splunkbase release.
 1. Download and install the app on Splunk Enterprise 10.4+ or Splunk Cloud (search head).
 2. Open Dashboard Studio and add a visualization.
 3. Choose **Wind Compass** from the custom visualization picker (type: windcompass.windcompass).
-4. Attach a search that returns one row with wind direction (0–360°) and wind speed.
-5. Map field names under **Data fields** in the Setup panel if your column names differ from the defaults.
-6. Open **Wind Compass — Demo** from the app nav to see all three skins with sample data.
+4. By default it's in Live mode — just set a City under Data source and you're done.
+5. To use your own data instead, set Data source → Mode to Search, attach a search returning one row with wind direction (0–360°) and wind speed, and map field names under **Search: field mapping** if your column names differ from the defaults.
+6. Open **Wind Compass — Demo** from the app nav to see both modes and all three skins.
 ```
 
 ---
@@ -100,7 +127,7 @@ Initial Splunkbase release.
 | Splunk Cloud | Yes (AppInspect cloud tag passed) |
 | Dashboard Studio | Required |
 | Platform | Search heads (standalone, distributed, SHC) |
-| Index requirement | None (demo is self-contained) |
+| Index requirement | None — Live mode needs no index; Search mode is bring-your-own |
 
 ---
 

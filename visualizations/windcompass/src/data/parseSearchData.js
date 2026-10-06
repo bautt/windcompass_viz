@@ -115,9 +115,21 @@ export function parseSearchData(data, options = {}) {
         FIELD_ALIASES.windGusts,
         options.fieldWindGusts,
     );
+    const weatherCodeField = resolveField(
+        data,
+        FIELD_ALIASES.weatherCode,
+        options.fieldWeatherCode,
+    );
+    const isDayField = resolveField(
+        data,
+        FIELD_ALIASES.isDay,
+        options.fieldIsDay,
+    );
 
     const temperature = parseNumber(tempField.value, tempField.field);
     const windGusts = parseNumber(gustField.value, gustField.field);
+    const weatherCode = weatherCodeField.value === null ? null : Number(weatherCodeField.value);
+    const isDay = isDayField.value === null ? null : Number(isDayField.value);
 
     let location = locField.value ? String(locField.value) : null;
     if (location && countryField.value) {
@@ -130,6 +142,8 @@ export function parseSearchData(data, options = {}) {
         windGusts,
         temperature,
         location,
+        weatherCode: Number.isNaN(weatherCode) ? null : weatherCode,
+        isDay: Number.isNaN(isDay) ? null : isDay,
         fieldsUsed: {
             windDirection: windDir.field,
             windSpeed: windSpd.field,

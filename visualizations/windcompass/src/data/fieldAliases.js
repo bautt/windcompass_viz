@@ -48,6 +48,14 @@ export const OPTIONAL_FIELDS = {
         defaultField: 'wind_gusts',
         aliases: ['wind_gusts', 'wind_gusts_10m', 'gusts'],
     },
+    weatherCode: {
+        defaultField: 'weather_code',
+        aliases: ['weather_code', 'weathercode', 'wmo_code'],
+    },
+    isDay: {
+        defaultField: 'is_day',
+        aliases: ['is_day', 'isday', 'daytime'],
+    },
 };
 
 /** Flat alias lists for parseSearchData */
@@ -58,6 +66,8 @@ export const FIELD_ALIASES = {
     temperature: OPTIONAL_FIELDS.temperature.aliases,
     location: OPTIONAL_FIELDS.location.aliases,
     country: OPTIONAL_FIELDS.country.aliases,
+    weatherCode: OPTIONAL_FIELDS.weatherCode.aliases,
+    isDay: OPTIONAL_FIELDS.isDay.aliases,
 };
 
 export const FIELD_DEFAULTS = {
@@ -67,4 +77,6 @@ export const FIELD_DEFAULTS = {
     fieldTemperature: OPTIONAL_FIELDS.temperature.defaultField,
     fieldWindGusts: OPTIONAL_FIELDS.windGusts.defaultField,
     fieldCountry: OPTIONAL_FIELDS.country.defaultField,
+    fieldWeatherCode: OPTIONAL_FIELDS.weatherCode.defaultField,
+    fieldIsDay: OPTIONAL_FIELDS.isDay.defaultField,
 };

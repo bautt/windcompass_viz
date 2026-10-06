@@ -260,6 +260,14 @@ function stageLegalFiles(projectRoot, stageAppDir) {
     }
 }
 
+function stageStaticFiles(projectRoot, stageAppDir) {
+    const staticDir = join(projectRoot, 'package', 'static');
+    if (!existsSync(staticDir)) return;
+
+    console.log(colors.info('Copying app icon/static assets...'));
+    cpSync(staticDir, join(stageAppDir, 'static'), { recursive: true });
+}
+
 // ---------------------------------------------------------------------------
 // Staging
 // ---------------------------------------------------------------------------
@@ -412,6 +420,7 @@ async function main({ cwd }) {
 
     stagePackageDefaults(projectRoot, stageAppDir);
     stageLegalFiles(projectRoot, stageAppDir);
+    stageStaticFiles(projectRoot, stageAppDir);
 
     try {
         stageVisualizations(vizs, stageAppDir);

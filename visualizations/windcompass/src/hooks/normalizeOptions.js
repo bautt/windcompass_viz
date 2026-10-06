@@ -11,6 +11,9 @@ const BOOLEAN_OPTIONS = new Set([
     'showTemperature',
     'showLocation',
     'showDirectionLabel',
+    'showWeatherCondition',
+    'showCompass',
+    'showFrame',
 ]);
 
 function isBooleanOption(name, defaultValue) {

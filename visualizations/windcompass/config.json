@@ -5,7 +5,7 @@
     "showDrilldown": false,
     "config": {
         "name": "Wind Compass",
-        "description": "Animated compass for wind direction and speed. Requires one search row with wind_direction (0–360°) and wind_speed (numeric). Optional: location, temperature.",
+        "description": "Animated wind compass. Live mode: just set a City — no search required, data from Open-Meteo. Search mode: bind your own search with wind_direction (0–360°) and wind_speed fields.",
         "category": "Custom",
         "dataContract": {
             "requiredDataSources": ["primary"]
@@ -15,6 +15,14 @@
             "initialHeight": 420
         },
         "optionsSchema": {
+            "dataMode": {
+                "type": "string",
+                "default": "live",
+                "enum": ["live", "search"]
+            },
+            "city": { "type": "string", "default": "Berlin" },
+            "country": { "type": "string", "default": "" },
+            "refreshSec": { "type": "number", "default": 300 },
             "skin": {
                 "type": "string",
                 "default": "clean",
@@ -41,6 +49,8 @@
                 "enum": ["c", "f"]
             },
             "backgroundColor": { "type": "string", "default": "" },
+            "showFrame": { "type": "boolean", "default": false },
+            "frameColor": { "type": "string", "default": "" },
             "bezelColor": { "type": "string", "default": "" },
             "dialColor": { "type": "string", "default": "" },
             "textColor": { "type": "string", "default": "" },
@@ -59,6 +69,8 @@
             "showTemperature": { "type": "boolean", "default": false },
             "showLocation": { "type": "boolean", "default": true },
             "showDirectionLabel": { "type": "boolean", "default": true },
+            "showWeatherCondition": { "type": "boolean", "default": true },
+            "showCompass": { "type": "boolean", "default": true },
             "animationDurationMs": { "type": "number", "default": 600 },
             "readoutPosition": {
                 "type": "string",
@@ -70,12 +82,60 @@
             "fieldLocation": { "type": "string", "default": "location" },
             "fieldTemperature": { "type": "string", "default": "temperature" },
             "fieldWindGusts": { "type": "string", "default": "wind_gusts" },
-            "fieldCountry": { "type": "string", "default": "country" }
+            "fieldCountry": { "type": "string", "default": "country" },
+            "fieldWeatherCode": { "type": "string", "default": "weather_code" },
+            "fieldIsDay": { "type": "string", "default": "is_day" }
         },
         "editorConfig": [
             {
+                "label": "Data source",
+                "layout": [
+                    [
+                        {
+                            "editor": "editor.select",
+                            "label": "Mode",
+                            "option": "dataMode",
+                            "editorProps": {
+                                "values": [
+                                    { "label": "Live (Open-Meteo, no search needed)", "value": "live" },
+                                    { "label": "Search (use your own data)", "value": "search" }
+                                ]
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Live: City",
+                            "option": "city"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Live: Country (optional — e.g. DE or Germany)",
+                            "option": "country"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.number",
+                            "label": "Live: refresh interval (seconds, min 60)",
+                            "option": "refreshSec"
+                        }
+                    ]
+                ]
+            },
+            {
                 "label": "Style",
                 "layout": [
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Compass dial (off = weather-only)",
+                            "option": "showCompass"
+                        }
+                    ],
                     [
                         {
                             "editor": "editor.select",
@@ -142,6 +202,20 @@
                             "editor": "editor.color",
                             "label": "Background",
                             "option": "backgroundColor"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
+                            "label": "Rounded frame",
+                            "option": "showFrame"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.color",
+                            "label": "Frame",
+                            "option": "frameColor"
                         }
                     ],
                     [
@@ -275,6 +349,13 @@
                     [
                         {
                             "editor": "editor.checkbox",
+                            "label": "Weather icon (sun/rain/snow/…)",
+                            "option": "showWeatherCondition"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.checkbox",
                             "label": "Compass label (N, NNW, …)",
                             "option": "showDirectionLabel"
                         }
@@ -323,7 +404,7 @@
                 ]
             },
             {
-                "label": "Data fields",
+                "label": "Search: field mapping",
                 "layout": [
                     [
                         {
@@ -358,6 +439,20 @@
                             "editor": "editor.text",
                             "label": "Temperature",
                             "option": "fieldTemperature"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Weather code (WMO, optional)",
+                            "option": "fieldWeatherCode"
+                        }
+                    ],
+                    [
+                        {
+                            "editor": "editor.text",
+                            "label": "Is day (0/1, optional)",
+                            "option": "fieldIsDay"
                         }
                     ]
                 ]

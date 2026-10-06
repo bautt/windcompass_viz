@@ -84,16 +84,21 @@ export const SKINS = {
         cardinalLabelRadius: 0.76,
         innerHubRadius: 0.32,
         showNorthMarker: false,
+        // Light variant: a bright aviation-gauge look (light dial face, dark
+        // ticks/text, red needle) rather than the dark-HUD palette below —
+        // so the instrument skin actually adapts when themeOverride/the
+        // dashboard theme is "light", instead of staying a dark panel on a
+        // light background with illegible near-white text.
         light: {
-            backgroundColor: '#111111',
-            bezelColor: '#2a2a2a',
-            dialColor: '#1a1a1a',
-            innerHubColor: '#242424',
-            textColor: '#e8e8e8',
-            tickColor: '#555555',
-            tickMajorColor: '#aaaaaa',
-            trueNeedleColor: '#ffffff',
-            trueTailColor: '#cccccc',
+            backgroundColor: '#eceef1',
+            bezelColor: '#c7cad0',
+            dialColor: '#f8f9fa',
+            innerHubColor: '#d7dadf',
+            textColor: '#1a1d21',
+            tickColor: '#9a9ea5',
+            tickMajorColor: '#4a4e55',
+            trueNeedleColor: '#c0392b',
+            trueTailColor: '#8e2d1f',
         },
         dark: {
             backgroundColor: '#111111',

@@ -1,67 +1,62 @@
 import { formatSpeed } from '../data/formatters.js';
 import { formatDirection } from '../data/compassRose.js';
 import { isOptionEnabled } from '../hooks/normalizeOptions.js';
+import { WindArrow } from './WindArrow.jsx';
 
 function formatTemp(tempC, unitKey) {
     if (unitKey === 'f') {
-        return `${((tempC * 9) / 5 + 32).toFixed(1)} °F`;
+        return `${((tempC * 9) / 5 + 32).toFixed(1)}°F`;
     }
-    return `${tempC.toFixed(1)} °C`;
+    return `${tempC.toFixed(1)}°C`;
 }
 
+/**
+ * Compact readouts shown alongside the compass dial. Shares the same wind
+ * pill + bold-temperature visual language as `WeatherHero` so the view
+ * looks consistent whether or not the dial itself is visible.
+ */
 export function ReadoutPanel({ data, options, theme }) {
-    const items = [];
     const showCompassLabel = isOptionEnabled(options.showDirectionLabel);
+    const showLocation = isOptionEnabled(options.showLocation) && !!data.location;
+    const showDirection = isOptionEnabled(options.showTrueDirectionReadout);
+    const showSpeed = isOptionEnabled(options.showTrueSpeedReadout) && !isOptionEnabled(options.showCenterSpeed);
+    const showTemp = isOptionEnabled(options.showTemperature) && data.temperature !== null;
+    const showWind = showDirection || showSpeed;
 
-    if (isOptionEnabled(options.showLocation) && data.location) {
-        items.push({ key: 'loc', label: '', value: data.location, primary: true });
-    }
-
-    if (isOptionEnabled(options.showTrueDirectionReadout)) {
-        items.push({
-            key: 'twd',
-            label: 'Wind',
-            value: formatDirection(data.windDirection, { showCompass: showCompassLabel }),
-        });
-    }
-
-    if (isOptionEnabled(options.showTrueSpeedReadout) && !isOptionEnabled(options.showCenterSpeed)) {
-        const speed = formatSpeed(data.windSpeed, options.speedUnit || 'kmh');
-        items.push({
-            key: 'tws',
-            label: 'Speed',
-            value: `${speed.value} ${speed.label}`,
-        });
-    }
-
-    if (isOptionEnabled(options.showTemperature) && data.temperature !== null) {
-        items.push({
-            key: 'temp',
-            label: 'Temp',
-            value: formatTemp(data.temperature, options.tempUnit || 'c'),
-        });
-    }
-
-    if (items.length === 0) return null;
+    if (!showLocation && !showTemp && !showWind) return null;
 
     const position = options.readoutPosition || 'bottom';
+    const speed = formatSpeed(data.windSpeed, options.speedUnit || 'kmh');
 
     return (
         <div
             className={`wind-compass__readouts wind-compass__readouts--${position}`}
             style={{ color: theme.textColor }}
         >
-            {items.map((item) => (
-                <div
-                    key={item.key}
-                    className={`wind-compass__readout${item.primary ? ' wind-compass__readout--primary' : ''}`}
-                >
-                    {item.label && (
-                        <span className="wind-compass__readout-label">{item.label}</span>
+            {showLocation && (
+                <div className="wind-compass__readout-location">{data.location}</div>
+            )}
+            {(showTemp || showWind) && (
+                <div className="wind-compass__readout-row">
+                    {showTemp && (
+                        <span className="wind-compass__readout-temp">
+                            {formatTemp(data.temperature, options.tempUnit || 'c')}
+                        </span>
                     )}
-                    <span className="wind-compass__readout-value">{item.value}</span>
+                    {showWind && (
+                        <span className="wind-compass__readout-wind" style={{ borderColor: theme.trueNeedleColor }}>
+                            {showDirection && (
+                                <WindArrow size={16} angle={data.windDirection} color={theme.trueNeedleColor} />
+                            )}
+                            <span>
+                                {showSpeed ? `${speed.value} ${speed.label}` : ''}
+                                {showSpeed && showDirection ? ' · ' : ''}
+                                {showDirection ? formatDirection(data.windDirection, { showCompass: showCompassLabel }) : ''}
+                            </span>
+                        </span>
+                    )}
                 </div>
-            ))}
+            )}
         </div>
     );
 }

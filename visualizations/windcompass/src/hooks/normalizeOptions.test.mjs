@@ -12,6 +12,9 @@ const DEFAULTS = {
     showTemperature: false,
     showLocation: true,
     showDirectionLabel: true,
+    showWeatherCondition: true,
+    showCompass: true,
+    showFrame: false,
     backgroundColor: '',
 };
 
@@ -26,6 +29,9 @@ const BOOLEAN_KEYS = [
     'showTemperature',
     'showLocation',
     'showDirectionLabel',
+    'showWeatherCondition',
+    'showCompass',
+    'showFrame',
 ];
 
 function assertDisabled(raw, key) {
