@@ -1,6 +1,19 @@
-# windcompass
+# Wind Compass
 
 Animated **wind compass** custom visualization for Splunk Dashboard Studio 10.4+.
+
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+
+## Features
+
+- Three skins: **Clean**, **Marine**, **Instrument**
+- Animated wind-direction needle (eight needle styles)
+- Readouts: direction, speed (panel or center hub), location, temperature
+- Configurable speed units (km/h, m/s, knots, mph) and temperature (°C / °F)
+- Per-color overrides and light/dark theme support
+- Field-name mapping for common weather schemas
+
+**Visualization type:** `windcompass.windcompass`
 
 ## Required data (one row)
 
@@ -9,7 +22,7 @@ Animated **wind compass** custom visualization for Splunk Dashboard Studio 10.4+
 | **Wind direction** | `wind_direction` | 0–360° | Direction wind comes from (meteorological) |
 | **Wind speed** | `wind_speed` | number | Speed value (unit via **Speed unit** option) |
 
-Field names are configurable under **Data fields** in the DS editor. Common aliases are auto-detected (e.g. `wind_direction_10m`, `wind_speed_10m`).
+Field names are configurable under **Data fields** in the Dashboard Studio Setup panel. Common aliases are auto-detected (e.g. `wind_direction_10m`, `wind_speed_10m`).
 
 ## Optional fields
 
@@ -18,25 +31,25 @@ Field names are configurable under **Data fields** in the DS editor. Common alia
 | Location | `location` |
 | Country | `country` |
 | Temperature | `temperature` |
-| Heading (dial rotation) | `heading` |
-| Apparent wind direction | `apparent_wind_direction` |
-| Apparent wind speed | `apparent_wind_speed` |
 | Wind gusts | `wind_gusts` |
 
-## Build & install
+## Install
+
+Install the `.spl` package from `dist/` on Splunk Enterprise 10.4+ or Splunk Cloud.
+
+**Demo dashboard:** **Wind Compass — Demo** (`/app/windcompass/windcompass_demo`) — self-contained sample data via `| makeresults`. No index or inputs required.
+
+## Build from source
 
 ```bash
-cd /opt/code/windcompass
+git clone https://github.com/bautt/windcompass_viz.git
+cd windcompass_viz
 yarn install
 yarn build:prod
 yarn package
 ```
 
-Install the `.spl` from `dist/` on Splunk 10.4+.
-
-**Demo dashboard:** `Wind Compass — Live Weather` (`/app/windcompass/windcompass_demo`) — city dropdown over `index=s4c_meteo` (splunk4champions2 / TA-open-meteo).
-
-**DS visualization type:** `windcompass.windcompass`
+Output: `dist/windcompass-<version>-<hash>.spl`
 
 ## Example SPL
 
@@ -46,25 +59,34 @@ Install the `.spl` from `dist/` on Splunk 10.4+.
 | table location wind_direction wind_speed temperature
 ```
 
-### Open-Meteo (splunk4champions2) — map fields in SPL
+### Open-Meteo — map fields in SPL or in the editor
 
 ```spl
-index=s4c_meteo sourcetype=open_meteo:weather:json city="Berlin"
+index=weather sourcetype=open_meteo:weather:json city="Berlin"
 | sort - _time | head 1
-| eval wind_direction=wind_direction_10m, wind_speed=wind_speed_10m
-| eval location=city, temperature=temperature_2m
-| table location country wind_direction wind_speed temperature
+| table city country wind_direction_10m wind_speed_10m temperature_2m
 ```
 
-Or set **Data fields** in the viz editor to `wind_direction_10m` / `wind_speed_10m` / `city` without renaming in SPL.
+Or set **Data fields** in the viz editor to `wind_direction_10m`, `wind_speed_10m`, `city`, and `temperature_2m` without renaming in SPL.
 
-## Configuration
+## Configuration (Dashboard Studio Setup)
 
-All style and colors are editable in Dashboard Studio under panel **Setup**:
-
-- **Style** — skin, theme, dial mode, ticks, cardinals, animation
-- **Colors** — background, bezel, dial, text, ticks, hub
-- **True wind** — needle type, colors, readouts
-- **Apparent wind** — second needle (optional)
-- **Readouts** — location, temperature, heading, units
+- **Style** — skin, theme, ticks, cardinals, animation
+- **Colors** — background, bezel, dial, text, ticks, hub, needle
+- **True wind** — needle type, colors, direction/speed readouts, center-hub speed
+- **Readouts** — location, temperature, compass labels, units
 - **Data fields** — map your search column names
+
+## Splunk Cloud
+
+The app passes AppInspect with the `cloud` tag (no errors, failures, or warnings). See `SPLUNKBASE.md` for listing copy and release notes.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+Bundled third-party components are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Support
+
+Report issues: https://github.com/bautt/windcompass_viz/issues

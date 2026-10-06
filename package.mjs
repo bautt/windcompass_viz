@@ -194,11 +194,33 @@ function generateVisualizationsConf(vizs) {
         .join('\n\n');
 }
 
-function generateDefaultMeta(vizs) {
+function discoverExportedViews(projectRoot) {
+    const viewsDir = join(projectRoot, 'package', 'default', 'data', 'ui', 'views');
+    if (!existsSync(viewsDir)) return [];
+
+    return readdirSync(viewsDir)
+        .filter((name) => name.endsWith('.xml'))
+        .map((name) => name.replace(/\.xml$/, ''));
+}
+
+function generateDefaultMeta(vizs, projectRoot) {
     const globalStanza = '[]\naccess = read : [ * ], write : [ admin, sc_admin, power ]';
-    if (vizs.length === 0) return globalStanza;
-    const vizStanzas = vizs.map((viz) => `[visualizations/${viz.name}]\nexport = system`).join('\n\n');
-    return `${globalStanza}\n\n${vizStanzas}`;
+    const stanzas = [globalStanza];
+
+    if (vizs.length > 0) {
+        stanzas.push(
+            vizs.map((viz) => `[visualizations/${viz.name}]\nexport = system`).join('\n\n'),
+        );
+    }
+
+    const views = discoverExportedViews(projectRoot);
+    if (views.length > 0) {
+        stanzas.push(
+            views.map((view) => `[views/${view}]\nexport = system`).join('\n\n'),
+        );
+    }
+
+    return stanzas.join('\n\n');
 }
 
 function generateAppManifest(appInfo) {
@@ -228,6 +250,14 @@ function stagePackageDefaults(projectRoot, stageAppDir) {
 
     console.log(colors.info('Copying package/default assets...'));
     cpSync(defaultsDir, join(stageAppDir, 'default'), { recursive: true });
+}
+
+function stageLegalFiles(projectRoot, stageAppDir) {
+    for (const file of ['LICENSE', 'THIRD_PARTY_NOTICES.md']) {
+        const src = join(projectRoot, file);
+        if (!existsSync(src)) continue;
+        copyFileSync(src, join(stageAppDir, file));
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -278,7 +308,7 @@ function stageAppConf(projectRoot, buildNumber) {
     return appInfo;
 }
 
-function stageConfFiles(stageAppDir, vizs) {
+function stageConfFiles(projectRoot, stageAppDir, vizs) {
     console.log(colors.info('Generating visualizations.conf...'));
     const defaultDir = join(stageAppDir, 'default');
     mkdirSync(defaultDir, { recursive: true });
@@ -287,7 +317,7 @@ function stageConfFiles(stageAppDir, vizs) {
     console.log(colors.info('Generating metadata exports...'));
     const metaDir = join(stageAppDir, 'metadata');
     mkdirSync(metaDir, { recursive: true });
-    writeFileSync(join(metaDir, 'default.meta'), generateDefaultMeta(vizs));
+    writeFileSync(join(metaDir, 'default.meta'), generateDefaultMeta(vizs, projectRoot));
 }
 
 // ---------------------------------------------------------------------------
@@ -381,6 +411,7 @@ async function main({ cwd }) {
     }
 
     stagePackageDefaults(projectRoot, stageAppDir);
+    stageLegalFiles(projectRoot, stageAppDir);
 
     try {
         stageVisualizations(vizs, stageAppDir);
@@ -389,7 +420,7 @@ async function main({ cwd }) {
         process.exit(1);
     }
 
-    stageConfFiles(stageAppDir, vizs);
+    stageConfFiles(projectRoot, stageAppDir, vizs);
 
     console.log(colors.info('Generating app manifest...'));
     writeFileSync(join(stageAppDir, 'app.manifest'), JSON.stringify(generateAppManifest(appInfoParsed), null, 2));

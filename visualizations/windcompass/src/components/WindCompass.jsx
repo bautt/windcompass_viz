@@ -82,7 +82,7 @@ export function WindCompass() {
 
     const options = useMemo(
         () => normalizeOptions(rawOptions, DEFAULT_OPTIONS),
-        [rawOptions],
+        [JSON.stringify(rawOptions)],
     );
     const dark = dsTheme === 'dark';
     const snap = mode === 'edit';

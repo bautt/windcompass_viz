@@ -83,7 +83,7 @@ export const SKINS = {
         cardinalFontWeight: 600,
         cardinalLabelRadius: 0.76,
         innerHubRadius: 0.32,
-        showNorthMarker: true,
+        showNorthMarker: false,
         light: {
             backgroundColor: '#111111',
             bezelColor: '#2a2a2a',

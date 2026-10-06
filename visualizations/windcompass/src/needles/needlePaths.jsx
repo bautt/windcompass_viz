@@ -171,8 +171,9 @@ function dotLineNeedle(length, needleColor) {
 }
 
 function instrumentNeedle(length, needleColor) {
-    const tip      = -length * 100;
-    const arrowH   = 18;
+    const pointerScale = 1.4;       // pointing half extended for instrument HUD readability
+    const tip      = -length * 100 * pointerScale;
+    const arrowH   = 18 * pointerScale;
     const arrowW   = 7;
     const arrowBase = tip + arrowH;
     const tailRingY = length * 70;

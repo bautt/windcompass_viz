@@ -22,7 +22,7 @@ export function useVisualizationState() {
                 { invokeImmediately: true },
             ),
             VisualizationAPI.addOptionsListener(
-                ({ options: opts }) => setOptions(opts || {}),
+                ({ options: opts }) => setOptions({ ...(opts || {}) }),
                 { invokeImmediately: true },
             ),
             VisualizationAPI.addDimensionsListener(

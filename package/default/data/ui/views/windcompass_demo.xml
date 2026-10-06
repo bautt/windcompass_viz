@@ -8,14 +8,14 @@
       "title": "Clean — Berlin",
       "dataSources": { "primary": "ds_berlin" },
       "options": {
-        "windcompass.windcompass.skin": "clean",
-        "windcompass.windcompass.showTemperature": true,
-        "windcompass.windcompass.showLocation": true,
-        "windcompass.windcompass.fieldWindDirection": "wind_direction_10m",
-        "windcompass.windcompass.fieldWindSpeed": "wind_speed_10m",
-        "windcompass.windcompass.fieldLocation": "city",
-        "windcompass.windcompass.fieldCountry": "country",
-        "windcompass.windcompass.fieldTemperature": "temperature_2m"
+        "skin": "clean",
+        "showTemperature": true,
+        "showLocation": true,
+        "fieldWindDirection": "wind_direction_10m",
+        "fieldWindSpeed": "wind_speed_10m",
+        "fieldLocation": "city",
+        "fieldCountry": "country",
+        "fieldTemperature": "temperature_2m"
       }
     },
     "viz_marine": {
@@ -23,14 +23,14 @@
       "title": "Marine — Vilnius",
       "dataSources": { "primary": "ds_vilnius" },
       "options": {
-        "windcompass.windcompass.skin": "marine",
-        "windcompass.windcompass.showTemperature": true,
-        "windcompass.windcompass.showLocation": true,
-        "windcompass.windcompass.fieldWindDirection": "wind_direction_10m",
-        "windcompass.windcompass.fieldWindSpeed": "wind_speed_10m",
-        "windcompass.windcompass.fieldLocation": "city",
-        "windcompass.windcompass.fieldCountry": "country",
-        "windcompass.windcompass.fieldTemperature": "temperature_2m"
+        "skin": "marine",
+        "showTemperature": true,
+        "showLocation": true,
+        "fieldWindDirection": "wind_direction_10m",
+        "fieldWindSpeed": "wind_speed_10m",
+        "fieldLocation": "city",
+        "fieldCountry": "country",
+        "fieldTemperature": "temperature_2m"
       }
     },
     "viz_instrument": {
@@ -38,16 +38,15 @@
       "title": "Instrument — San Francisco",
       "dataSources": { "primary": "ds_sanfrancisco" },
       "options": {
-        "windcompass.windcompass.skin": "instrument",
-        "windcompass.windcompass.trueNeedleType": "instrument",
-        "windcompass.windcompass.showCenterSpeed": true,
-        "windcompass.windcompass.showTemperature": true,
-        "windcompass.windcompass.showLocation": true,
-        "windcompass.windcompass.fieldWindDirection": "wind_direction_10m",
-        "windcompass.windcompass.fieldWindSpeed": "wind_speed_10m",
-        "windcompass.windcompass.fieldLocation": "city",
-        "windcompass.windcompass.fieldCountry": "country",
-        "windcompass.windcompass.fieldTemperature": "temperature_2m"
+        "skin": "instrument",
+        "trueNeedleType": "instrument",
+        "showTemperature": true,
+        "showLocation": true,
+        "fieldWindDirection": "wind_direction_10m",
+        "fieldWindSpeed": "wind_speed_10m",
+        "fieldLocation": "city",
+        "fieldCountry": "country",
+        "fieldTemperature": "temperature_2m"
       }
     }
   },

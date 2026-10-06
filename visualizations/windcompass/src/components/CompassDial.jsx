@@ -1,4 +1,5 @@
 import { formatSpeed } from '../data/formatters.js';
+import { isOptionEnabled } from '../hooks/normalizeOptions.js';
 import { WindNeedle } from '../needles/WindNeedle.jsx';
 
 const CARDINALS = [
@@ -39,7 +40,7 @@ function buildTicks(cx, cy, radius, skin, theme, options) {
     const majorInner = scaleRadius(radius, skin.majorTickInner, radius - 14);
     const majorOuter = scaleRadius(radius, skin.majorTickOuter, radius);
 
-    if (options.showMinorTicks !== false) {
+    if (isOptionEnabled(options.showMinorTicks)) {
         for (let deg = 0; deg < 360; deg += minorEvery) {
             if (deg % majorEvery === 0) continue;
             const line = tickLine(cx, cy, minorInner, minorOuter, deg);
@@ -54,7 +55,7 @@ function buildTicks(cx, cy, radius, skin, theme, options) {
         }
     }
 
-    if (options.showMajorTicks !== false) {
+    if (isOptionEnabled(options.showMajorTicks)) {
         for (let deg = 0; deg < 360; deg += majorEvery) {
             const line = tickLine(cx, cy, majorInner, majorOuter, deg);
             ticks.push(
@@ -196,7 +197,7 @@ export function CompassDial({
 
                 {ticks}
 
-                {options.showCardinals !== false &&
+                {isOptionEnabled(options.showCardinals) &&
                     CARDINALS.map(({ label, angle }) => {
                         const pos = polarToCartesian(cx, cy, labelR, angle);
                         return (
@@ -236,7 +237,7 @@ export function CompassDial({
             </g>
 
             <g transform={`translate(${cx} ${cy})`}>
-                {options.showTrueWind !== false && (
+                {isOptionEnabled(options.showTrueWind) && (
                     <WindNeedle
                         angle={trueWindAngle}
                         type={trueNeedleType}
@@ -247,17 +248,17 @@ export function CompassDial({
                 )}
             </g>
 
-            {options.showCenterSpeed &&
-                data &&
-                options.showTrueSpeedReadout !== false && (
-                    <CenterSpeedReadout
-                        cx={cx}
-                        cy={cy}
-                        speedKmh={data.windSpeed}
-                        unitKey={options.speedUnit || 'kmh'}
-                        color={theme.textColor}
-                    />
-                )}
+            {isOptionEnabled(options.showTrueSpeedReadout) &&
+                isOptionEnabled(options.showCenterSpeed) &&
+                data && (
+                <CenterSpeedReadout
+                    cx={cx}
+                    cy={cy}
+                    speedKmh={data.windSpeed}
+                    unitKey={options.speedUnit || 'kmh'}
+                    color={theme.textColor}
+                />
+            )}
         </svg>
     );
 }

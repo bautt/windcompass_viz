@@ -1,5 +1,6 @@
 import { formatSpeed } from '../data/formatters.js';
 import { formatDirection } from '../data/compassRose.js';
+import { isOptionEnabled } from '../hooks/normalizeOptions.js';
 
 function formatTemp(tempC, unitKey) {
     if (unitKey === 'f') {
@@ -10,13 +11,13 @@ function formatTemp(tempC, unitKey) {
 
 export function ReadoutPanel({ data, options, theme }) {
     const items = [];
-    const showCompassLabel = options.showDirectionLabel !== false;
+    const showCompassLabel = isOptionEnabled(options.showDirectionLabel);
 
-    if (options.showLocation !== false && data.location) {
+    if (isOptionEnabled(options.showLocation) && data.location) {
         items.push({ key: 'loc', label: '', value: data.location, primary: true });
     }
 
-    if (options.showTrueDirectionReadout !== false) {
+    if (isOptionEnabled(options.showTrueDirectionReadout)) {
         items.push({
             key: 'twd',
             label: 'Wind',
@@ -24,7 +25,7 @@ export function ReadoutPanel({ data, options, theme }) {
         });
     }
 
-    if (options.showTrueSpeedReadout !== false && !options.showCenterSpeed) {
+    if (isOptionEnabled(options.showTrueSpeedReadout) && !isOptionEnabled(options.showCenterSpeed)) {
         const speed = formatSpeed(data.windSpeed, options.speedUnit || 'kmh');
         items.push({
             key: 'tws',
@@ -33,7 +34,7 @@ export function ReadoutPanel({ data, options, theme }) {
         });
     }
 
-    if (options.showTemperature && data.temperature !== null) {
+    if (isOptionEnabled(options.showTemperature) && data.temperature !== null) {
         items.push({
             key: 'temp',
             label: 'Temp',
