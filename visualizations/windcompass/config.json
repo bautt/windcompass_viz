@@ -5,7 +5,7 @@
     "showDrilldown": false,
     "config": {
         "name": "Wind Compass",
-        "description": "Animated wind compass. Live mode: just set a City — no search required, data from Open-Meteo. Search mode: bind your own search with wind_direction (0–360°) and wind_speed fields.",
+        "description": "Wind direction and speed on an animated compass. Live by city, or your search.",
         "category": "Custom",
         "dataContract": {
             "requiredDataSources": ["primary"]

@@ -284,6 +284,18 @@ function stageVisualizations(vizs, stageAppDir) {
         }
         copyFileSync(viz.distPath, join(destDir, 'visualization.js'));
 
+        // Splunk's visualization picker icon. Splunkbase rejects a package whose
+        // visualization stanza has no icon, so this is required rather than
+        // decorative; the name and the 116x76 PNG format are fixed by Splunk.
+        const previewPath = join(dirname(viz.configPath), 'preview.png');
+        if (existsSync(previewPath)) {
+            copyFileSync(previewPath, join(destDir, 'preview.png'));
+        } else {
+            console.warn(colors.warning(
+                `  Warning: ${viz.name}/preview.png not found — Splunkbase requires a visualization icon`,
+            ));
+        }
+
         const sourceMapPath = `${viz.distPath}.map`;
         if (existsSync(sourceMapPath)) {
             copyFileSync(sourceMapPath, join(destDir, 'visualization.js.map'));
@@ -337,6 +349,17 @@ async function createSplArchive(stageDir, appId, distDir, filename) {
     mkdirSync(distDir, { recursive: true });
     const outputPath = join(distDir, filename);
     await createTar({ gzip: true, file: outputPath, cwd: stageDir, filter: (p) => !p.startsWith('.') }, [appId]);
+    return outputPath;
+}
+
+/**
+ * Splunkbase's uploader expects a .tgz/.tar.gz extension, so ship that name too.
+ * A .spl already *is* a gzipped tar, so this is a byte-identical copy rather
+ * than a second archive — no risk of the two differing.
+ */
+function createTarGzCopy(splPath, distDir, appId, appVersion) {
+    const outputPath = join(distDir, `${appId}-${appVersion}.tar.gz`);
+    copyFileSync(splPath, outputPath);
     return outputPath;
 }
 
@@ -436,9 +459,11 @@ async function main({ cwd }) {
 
     const splatFilename = `${appId}-${appVersion}-${shortHash}.spl`;
     const outputPath = await createSplArchive(stageDir, appId, distDir, splatFilename);
+    const tarGzPath = createTarGzCopy(outputPath, distDir, appId, appVersion);
 
     console.log(colors.success('Successfully created Splunk app package!'));
     console.log(colors.dim(`Output: ${outputPath}`));
+    console.log(colors.dim(`Splunkbase upload: ${tarGzPath}`));
     console.log(colors.dim(`Staging directory: ${stageAppDir}`));
 }
 

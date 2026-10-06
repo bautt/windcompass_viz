@@ -21,6 +21,13 @@ splunk-appinspect inspect dist/windcompass-<version>-<hash>.spl --mode precert
 The `.spl` filename embeds the current git commit hash, so commit first and the
 uploaded artifact is traceable to a specific revision.
 
+This writes two files to `dist/`. Upload `windcompass-<version>.tar.gz` —
+Splunkbase's uploader wants that extension, and a `.spl` already is a gzipped
+tar, so the two files are byte-identical copies of the same archive.
+
+Expect exactly one AppInspect warning, on `check_for_updates`. It only applies
+to private apps that are never published; see the v0.5.2 release notes below.
+
 ---
 
 ## App title
@@ -94,6 +101,28 @@ Report issues on GitHub: https://github.com/bautt/windcompass_viz/issues
 ```
 
 ---
+
+## Release notes (v0.5.2)
+
+```
+Packaging fixes for Splunkbase submission. No functional changes.
+
+* Fixed: check_for_updates was set to false in app.conf's [package] stanza,
+  which Splunkbase rejects — it is the mechanism that tells users a new
+  version is available. Now true. (false is correct only for private apps
+  that are never published, which is what AppInspect's local check warns
+  about; that warning is expected for a published app.)
+* Fixed: the visualization had no picker icon, which Splunkbase reports as
+  "one or more of the visualization stanzas is missing an icon". Added
+  preview.png (116x76, as Splunk requires), rendered from the Clean skin's
+  dial, and packaging now stages it and warns if it is ever absent.
+* Fixed: the visualizations.conf description was 179 characters against
+  Splunk's documented 80-character limit for the visualization picker.
+  Shortened; the full explanation remains in the demo dashboard and README.
+* Added: a .tar.gz build of the package alongside the .spl, for Splunkbase
+  upload. Identical archive — .spl is a gzipped tar — just the extension
+  Splunkbase's uploader expects.
+```
 
 ## Release notes (v0.5.1)
 

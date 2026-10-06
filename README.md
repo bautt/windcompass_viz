@@ -187,7 +187,9 @@ yarn build:prod
 yarn package
 ```
 
-Output: `dist/windcompass-<version>-<hash>.spl`
+Output: `dist/windcompass-<version>-<hash>.spl`, plus a byte-identical
+`dist/windcompass-<version>.tar.gz` for Splunkbase, whose uploader wants that
+extension.
 
 Use `yarn build:prod`, not `yarn build`, for anything you distribute. The plain
 build is a development build: it skips minification, emits a source map that
