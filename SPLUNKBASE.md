@@ -5,6 +5,24 @@ if needed before publishing.
 
 ---
 
+## Package to upload
+
+Build the release artifact in production mode, otherwise the package ships an
+unminified bundle plus a source map (roughly 2.8 MB instead of 180 KB) and runs
+React in development mode:
+
+```bash
+node run-tests.mjs
+NODE_ENV=production node build.mjs --entry=visualization.jsx
+node package.mjs
+splunk-appinspect inspect dist/windcompass-<version>-<hash>.spl --mode precert
+```
+
+The `.spl` filename embeds the current git commit hash, so commit first and the
+uploaded artifact is traceable to a specific revision.
+
+---
+
 ## App title
 
 ```
@@ -45,6 +63,7 @@ Three built-in skins — Clean, Marine, and Instrument — suit dashboards from 
 * Configurable speed units (km/h, m/s, knots, mph) and temperature units (°C, °F)
 * Eight needle styles including a dedicated Instrument needle
 * Light/dark theme support with per-color overrides
+* Rate-limit aware: results are cached in the browser, requests are spaced out, and throttled requests retry automatically, so a dashboard full of live panels loads cleanly
 
 **Live mode data**
 
@@ -61,11 +80,11 @@ Location, country, temperature, wind gusts, weather code, and is-day can also be
 
 **Demo dashboard**
 
-The app ships with **Wind Compass — Demo**, a self-contained Dashboard Studio page built entirely in Live mode — a dark-themed row, a light-themed row, and a compass-hidden "weather only" row — so it renders real data for anyone immediately, with no index, inputs, or search data of your own required. Switch any panel's Data source mode to Search if you'd rather bind your own data.
+The app ships with **Wind Compass — Demo**, a self-contained Dashboard Studio page built entirely in Live mode: a dark-themed row, a light-themed row, and a compass-hidden "weather only" row, plus short explanations of both data modes and how live data is fetched. It renders real weather for anyone immediately, with no index, inputs, or search data of your own required. Switch any panel's Data source mode to Search if you'd rather bind your own data.
 
 **Privacy**
 
-This app does not collect, store, or transmit telemetry. In Search mode, it renders only the search results you attach to the panel and makes no external network calls. In Live mode, your browser calls Open-Meteo's free geocoding/forecast APIs directly to resolve the city you configure; no API key or Splunk data is sent to Open-Meteo. See THIRD_PARTY_NOTICES.md for details.
+This app collects no telemetry and has no server-side component. In Search mode it renders only the search results you attach to the panel and makes no external network calls. In Live mode the viewer's browser — not the Splunk server — calls Open-Meteo's free geocoding and forecast APIs to resolve the city you configure; only that city name and its coordinates are sent, and no API key, credentials, or Splunk data are involved. Coordinates and the latest reading are cached in the browser's local storage to stay within Open-Meteo's rate limits. See THIRD_PARTY_NOTICES.md for details.
 
 **Support**
 
@@ -73,6 +92,26 @@ Report issues on GitHub: https://github.com/bautt/windcompass_viz/issues
 ```
 
 ---
+
+## Release notes (v0.5.0)
+
+```
+* Fixed: wind needles rendered at roughly half their intended length on the
+  Clean and Marine skins. All eight needle styles now reach the dial edge as
+  designed.
+* New: Live mode caches results in the browser — resolved city coordinates for
+  30 days (they never change) and the latest reading for up to 10 minutes. A
+  dashboard reload now costs no API requests at all.
+* New: requests are spaced out and rate-limit responses (HTTP 429) are retried
+  automatically with backoff. A multi-panel dashboard no longer shows
+  "Weather fetch failed (HTTP 429)" on some panels during a cold load.
+* New: duplicate panels on the same city now share a single request.
+* Changed: redesigned demo dashboard — clearer explanation of both data modes,
+  how live data is fetched, and third-party attribution.
+* Changed: new app icon derived from the Clean skin's dial.
+* Fixed: a render-time error now shows a readable message in the panel instead
+  of leaving it blank.
+```
 
 ## Release notes (v0.4.0)
 
@@ -154,10 +193,28 @@ Source: https://github.com/bautt/windcompass_viz
 ## Privacy statement
 
 ```
-Wind Compass is a client-side Dashboard Studio visualization. It reads search
-results supplied by the dashboard data source and renders them in the browser.
-The app does not phone home, collect telemetry, or transmit data to third-party
-services. No credentials or external network connections are used at runtime.
+Wind Compass is a client-side Dashboard Studio visualization. It runs entirely
+in the browser and contains no server-side code, scheduled searches, modular
+inputs, or custom endpoints. It collects no telemetry and never phones home to
+the author.
+
+Search mode makes no external network connections at all. It renders only the
+search results the dashboard supplies.
+
+Live mode calls two public Open-Meteo endpoints directly from the viewer's
+browser — geocoding-api.open-meteo.com to turn the configured city name into
+coordinates, and api.open-meteo.com for current conditions. The Splunk server
+makes no outbound connection. Only the city/country you configure and the
+coordinates it resolves to are sent; no Splunk data, user identity, search
+results, or credentials are included, and no API key is used or required.
+
+To stay within Open-Meteo's published rate limits, Live mode caches the
+resolved coordinates and the most recent reading in the viewer's browser
+(localStorage, keys prefixed "windcompass:"). Nothing is stored on the Splunk
+server, and clearing site data removes the cache. Live mode can be disabled
+per panel by switching Data source mode to Search, and an environment with no
+outbound internet access from end-user browsers simply shows a fetch error on
+those panels — nothing else is affected.
 ```
 
 ---
@@ -173,10 +230,12 @@ direction, speed, temperature, open-meteo
 
 ## Screenshot captions (suggested)
 
-1. **Clean skin** — Berlin sample data with direction, speed, location, and temperature readouts.
-2. **Marine skin** — nautical-style bezel and classic needle.
-3. **Instrument skin** — HUD-style dial with optional center-hub speed readout.
-4. **Setup panel** — Style, color, readout, and data-field options in Dashboard Studio.
+1. **Demo dashboard** — nine panels showing live weather for nine cities, no search configured.
+2. **Clean skin** — live Berlin conditions with direction, speed, location, and temperature readouts.
+3. **Marine skin** — nautical-style bezel and classic needle.
+4. **Instrument skin** — HUD-style dial with optional center-hub speed readout.
+5. **Weather-only layout** — compass dial switched off: large condition icon, temperature, and location.
+6. **Setup panel** — Data source, style, color, readout, and field-mapping options in Dashboard Studio.
 
 ---
 

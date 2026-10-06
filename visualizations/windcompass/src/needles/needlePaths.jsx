@@ -3,7 +3,9 @@
  * Coordinate system: (0,0) is the compass centre / rotation pivot.
  *   negative-y  →  forward (tip direction)
  *   positive-y  →  tail direction
- * length is a fraction of compass radius (0–1); we scale against 100 px.
+ * length is a fraction of compass radius (0–1), authored against a nominal
+ * 100 px radius. WindNeedle scales the result up to the dial's real radius,
+ * so shapes here only need to be internally proportionate.
  */
 
 function cleanNeedle(length, needleColor, tailColor) {
@@ -171,9 +173,8 @@ function dotLineNeedle(length, needleColor) {
 }
 
 function instrumentNeedle(length, needleColor) {
-    const pointerScale = 1.4;       // pointing half extended for instrument HUD readability
-    const tip      = -length * 100 * pointerScale;
-    const arrowH   = 18 * pointerScale;
+    const tip      = -length * 100;
+    const arrowH   = 18;
     const arrowW   = 7;
     const arrowBase = tip + arrowH;
     const tailRingY = length * 70;

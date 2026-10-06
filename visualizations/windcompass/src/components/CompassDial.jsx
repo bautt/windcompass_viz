@@ -1,4 +1,5 @@
 import { formatSpeed } from '../data/formatters.js';
+import { degreesToCompass } from '../data/compassRose.js';
 import { isOptionEnabled } from '../hooks/normalizeOptions.js';
 import { WindNeedle } from '../needles/WindNeedle.jsx';
 
@@ -8,6 +9,21 @@ const CARDINALS = [
     { label: 'S', angle: 180 },
     { label: 'W', angle: 270 },
 ];
+
+/**
+ * Spoken description of the dial for assistive technology. Meteorological
+ * convention, so it reads "wind from" rather than "wind towards".
+ */
+function describeReading(data, options) {
+    if (!data) return 'Wind compass';
+    const degrees = Math.round(data.windDirection);
+    const speed = formatSpeed(data.windSpeed, options.speedUnit);
+    const where = data.location ? ` at ${data.location}` : '';
+    return (
+        `Wind compass${where}: wind from ${degreesToCompass(degrees)}, ` +
+        `${degrees} degrees, ${speed.value} ${speed.label}`
+    );
+}
 
 function polarToCartesian(cx, cy, r, angleDeg) {
     const rad = ((angleDeg - 90) * Math.PI) / 180;
@@ -152,7 +168,9 @@ export function CompassDial({
             width={size}
             height={size}
             role="img"
-            aria-label="Wind compass"
+            // The dial is pure geometry, so without this a screen reader gets
+            // nothing but the word "compass" — state the reading it depicts.
+            aria-label={describeReading(data, options)}
         >
             {/* Solid-background skins (or an explicit bg color) fill inside the SVG so panel CSS can't override it */}
             {(skin.solidBackground || (theme.backgroundColor && theme.backgroundColor !== 'transparent')) && (
@@ -241,7 +259,7 @@ export function CompassDial({
                     <WindNeedle
                         angle={trueWindAngle}
                         type={trueNeedleType}
-                        length={trueNeedleType === 'instrument' ? 0.78 : 0.72}
+                        length={0.72}
                         needleColor={theme.trueNeedleColor}
                         tailColor={theme.trueTailColor}
                     />

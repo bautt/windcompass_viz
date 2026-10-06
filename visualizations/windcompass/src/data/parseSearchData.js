@@ -1,4 +1,5 @@
 import { FIELD_ALIASES, REQUIRED_FIELDS } from './fieldAliases.js';
+import { normalizeDegrees } from './windAngles.js';
 
 function fieldNames(data) {
     return (data.fields || []).map((f) => (f && f.name) || f);
@@ -47,17 +48,24 @@ function resolveField(data, aliases, explicitField) {
     return { field: explicitField || aliases[0], value: null };
 }
 
+/**
+ * Search mode renders whatever a user's SPL produces, so this has to reject
+ * Infinity as well as NaN: `Number('1e999')` is Infinity, which would survive
+ * into an SVG `rotate()` as NaN and silently break the dial.
+ */
 function parseNumber(raw, fieldLabel) {
     if (raw === null || raw === undefined || raw === '') return null;
     const n = Number(raw);
-    if (Number.isNaN(n)) {
+    if (!Number.isFinite(n)) {
         throw new Error(`"${fieldLabel}" must be numeric (got "${raw}")`);
     }
     return n;
 }
 
-function normalizeDegrees(deg) {
-    return ((deg % 360) + 360) % 360;
+function finiteOrNull(raw) {
+    if (raw === null || raw === undefined || raw === '') return null;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : null;
 }
 
 /**
@@ -128,8 +136,10 @@ export function parseSearchData(data, options = {}) {
 
     const temperature = parseNumber(tempField.value, tempField.field);
     const windGusts = parseNumber(gustField.value, gustField.field);
-    const weatherCode = weatherCodeField.value === null ? null : Number(weatherCodeField.value);
-    const isDay = isDayField.value === null ? null : Number(isDayField.value);
+    // Unlike the required fields these are cosmetic, so a bad value is dropped
+    // rather than failing the whole panel.
+    const weatherCode = finiteOrNull(weatherCodeField.value);
+    const isDay = finiteOrNull(isDayField.value);
 
     let location = locField.value ? String(locField.value) : null;
     if (location && countryField.value) {
@@ -142,8 +152,8 @@ export function parseSearchData(data, options = {}) {
         windGusts,
         temperature,
         location,
-        weatherCode: Number.isNaN(weatherCode) ? null : weatherCode,
-        isDay: Number.isNaN(isDay) ? null : isDay,
+        weatherCode,
+        isDay,
         fieldsUsed: {
             windDirection: windDir.field,
             windSpeed: windSpd.field,

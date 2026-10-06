@@ -1,39 +1,80 @@
 <dashboard version="2" theme="dark">
     <label>Wind Compass — Demo</label>
-    <description>Live-data wind &amp; weather compass, zero setup. Live-mode data via Open-Meteo (open-meteo.com), CC BY 4.0 — see Attribution below.</description>
+    <description>A compass dial for wind direction and speed. Uses live weather for a city you name, or your own search results. Live data from Open-Meteo (CC BY 4.0).</description>
     <definition><![CDATA[{
   "visualizations": {
+    "viz_intro_card": {
+      "type": "splunk.rectangle",
+      "options": {
+        "fillColor": "#1e293e",
+        "fillOpacity": 1,
+        "strokeColor": "#77abee",
+        "strokeOpacity": 0.7,
+        "strokeWidth": 1.5,
+        "rx": 14
+      }
+    },
     "viz_intro": {
       "type": "splunk.markdown",
-      "title": "Wind Compass",
-      "description": "Live wind & weather compass for Dashboard Studio",
       "options": {
-        "markdown": "A self-contained, zero-setup compass visualization — pick a city and go, no index, inputs, or search data required. Three looks are shown below: a dark theme, a light theme, and a weather-only view with the dial hidden. Prefer your own data instead? See **How it works** right below. Live-mode weather data via [Open-Meteo](https://open-meteo.com/), used under [CC BY 4.0](https://open-meteo.com/en/license) — full attribution at the bottom of this dashboard.",
-        "backgroundColor": "#171a21"
+        "markdown": "## Wind Compass\n\nDraws current wind direction and speed on a compass dial. Give it a city name and it fetches the weather itself — no index, search or setup needed. Or feed it a search of your own data instead.\n\nThe panels below show the same visualization in three skins, in dark and light themes, and with the dial switched off.",
+        "backgroundColor": "transparent",
+        "fontColor": "#e6ecf4"
+      }
+    },
+    "viz_live_card": {
+      "type": "splunk.rectangle",
+      "options": {
+        "fillColor": "#193332",
+        "fillOpacity": 1,
+        "strokeColor": "#2ec2b8",
+        "strokeOpacity": 0.7,
+        "strokeWidth": 1.5,
+        "rx": 14
       }
     },
     "viz_howitworks_live": {
       "type": "splunk.markdown",
-      "title": "Live mode",
-      "description": "Powered by Open-Meteo",
       "options": {
-        "markdown": "- Set a **City** (required) and **Country** (optional — disambiguates same-named cities) under the panel's **Data source** options.\n- Your browser calls Open-Meteo's free [geocoding](https://open-meteo.com/en/docs/geocoding-api) API to resolve the city to coordinates, then its [forecast](https://open-meteo.com/en/docs) API for current wind, temperature, and weather condition.\n- No Splunk index, data input, or search is required — the panel renders real data immediately after you set a city.\n- Auto-refreshes on your configured interval (default 300s, minimum 60s).\n- No API key, and no Splunk data is ever sent to Open-Meteo — see Attribution at the bottom of this dashboard.",
-        "backgroundColor": "#13202c"
+        "markdown": "### Live mode — name a city\n\n- Set **City** (and **Country**, if the name is ambiguous) in the panel's data source options.\n- No index, saved search or API key is required.\n- Refreshes every 300 seconds by default; 60 seconds is the minimum.\n- Needs internet access to [open-meteo.com](https://open-meteo.com/) from the viewer's browser.",
+        "backgroundColor": "transparent",
+        "fontColor": "#e6ecf4",
+        "fontSize": "small"
+      }
+    },
+    "viz_search_card": {
+      "type": "splunk.rectangle",
+      "options": {
+        "fillColor": "#2f1f3d",
+        "fillOpacity": 1,
+        "strokeColor": "#c089f0",
+        "strokeOpacity": 0.7,
+        "strokeWidth": 1.5,
+        "rx": 14
       }
     },
     "viz_howitworks_search": {
       "type": "splunk.markdown",
-      "title": "Search mode",
-      "description": "Bring your own data",
       "options": {
-        "markdown": "- Set **Data source → Mode** to **Search**, then bind a search returning one row to the panel.\n- Required fields: wind **direction** (0–360°, meteorological convention — direction the wind comes from) and wind **speed**, both numeric.\n- Optional fields: location, country, temperature, wind gusts, weather code, and is-day — map field names under **Search: field mapping**.\n- Default field names match Open-Meteo's own schema (`wind_direction_10m`, `wind_speed_10m`, `temperature_2m`, …), but any numeric fields work.",
-        "backgroundColor": "#17241c"
+        "markdown": "### Search mode — use your own data\n\n- Set **Mode** to **Search**, then bind a search that returns a single row.\n- Required: wind direction in degrees (0–360, the direction the wind blows from) and wind speed. Both numeric.\n- Optional: location, country, temperature, gusts, weather code, day/night.\n- Names are mapped under **Search: field mapping**; the defaults match Open-Meteo's.",
+        "backgroundColor": "transparent",
+        "fontColor": "#e6ecf4",
+        "fontSize": "small"
+      }
+    },
+    "viz_label_dark": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "**DARK THEME** &nbsp;·&nbsp; three skins, live weather",
+        "backgroundColor": "transparent",
+        "fontColor": "#a6bee7",
+        "fontSize": "small"
       }
     },
     "viz_live_clean": {
       "type": "windcompass.windcompass",
       "title": "Berlin",
-      "description": "Clean Live",
+      "description": "Clean skin",
       "options": {
         "dataMode": "live",
         "city": "Berlin",
@@ -50,7 +91,7 @@
     "viz_live_marine": {
       "type": "windcompass.windcompass",
       "title": "Odesa",
-      "description": "Marine Live",
+      "description": "Marine skin",
       "options": {
         "dataMode": "live",
         "city": "Odesa",
@@ -67,7 +108,7 @@
     "viz_live_instrument": {
       "type": "windcompass.windcompass",
       "title": "San Francisco",
-      "description": "Instrument Live",
+      "description": "Instrument skin, mph",
       "options": {
         "dataMode": "live",
         "city": "San Francisco",
@@ -76,78 +117,116 @@
         "trueNeedleType": "instrument",
         "showTemperature": true,
         "showLocation": true,
-        "speedUnit": "mph"
+        "speedUnit": "mph",
+        "showFrame": true
       }
     },
-    "viz_light_backdrop": {
+    "viz_label_light": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "",
-        "backgroundColor": "#ffffff"
+        "markdown": "**LIGHT THEME** &nbsp;·&nbsp; same panels, theme override set to light",
+        "backgroundColor": "transparent",
+        "fontColor": "#a6bee7",
+        "fontSize": "small"
+      }
+    },
+    "viz_light_card": {
+      "type": "splunk.rectangle",
+      "options": {
+        "fillColor": "#ffffff",
+        "fillOpacity": 1,
+        "strokeColor": "#98b8e1",
+        "strokeOpacity": 0.8,
+        "strokeWidth": 1,
+        "rx": 14
       }
     },
     "viz_clean_light": {
       "type": "windcompass.windcompass",
-      "title": "Berlin",
-      "description": "Clean Live",
+      "title": "Krakow",
+      "description": "Clean skin",
       "containerOptions": {
-        "title": { "color": "#1a1a2e" },
-        "description": { "color": "#1a1a2e" }
+        "title": {
+          "color": "#1a1a2e"
+        },
+        "description": {
+          "color": "#4a4f5c"
+        }
       },
       "options": {
         "dataMode": "live",
-        "city": "Berlin",
-        "country": "DE",
+        "city": "Krakow",
+        "country": "PL",
         "skin": "clean",
         "themeOverride": "light",
         "backgroundColor": "#ffffff",
         "showTemperature": true,
-        "showLocation": true
+        "showLocation": true,
+        "showFrame": true
       }
     },
     "viz_marine_light": {
       "type": "windcompass.windcompass",
-      "title": "Odesa",
-      "description": "Marine Live",
+      "title": "Hamburg",
+      "description": "Marine skin",
       "containerOptions": {
-        "title": { "color": "#1a1a2e" },
-        "description": { "color": "#1a1a2e" }
+        "title": {
+          "color": "#1a1a2e"
+        },
+        "description": {
+          "color": "#4a4f5c"
+        }
       },
       "options": {
         "dataMode": "live",
-        "city": "Odesa",
-        "country": "UA",
+        "city": "Hamburg",
+        "country": "DE",
         "skin": "marine",
         "themeOverride": "light",
         "backgroundColor": "#ffffff",
         "showTemperature": true,
-        "showLocation": true
+        "showLocation": true,
+        "showFrame": true
       }
     },
     "viz_instrument_light": {
       "type": "windcompass.windcompass",
-      "title": "San Francisco",
-      "description": "Instrument Live",
+      "title": "London",
+      "description": "Instrument skin",
       "containerOptions": {
-        "title": { "color": "#1a1a2e" },
-        "description": { "color": "#1a1a2e" }
+        "title": {
+          "color": "#1a1a2e"
+        },
+        "description": {
+          "color": "#4a4f5c"
+        }
       },
       "options": {
         "dataMode": "live",
-        "city": "San Francisco",
-        "country": "US",
+        "city": "London",
+        "country": "GB",
         "skin": "instrument",
         "themeOverride": "light",
         "backgroundColor": "#ffffff",
         "trueNeedleType": "instrument",
         "showTemperature": true,
-        "showLocation": true
+        "showLocation": true,
+        "showFrame": true
+      }
+    },
+    "viz_label_hero": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "**WEATHER ONLY** &nbsp;·&nbsp; compass dial switched off",
+        "backgroundColor": "transparent",
+        "fontColor": "#a6bee7",
+        "fontSize": "small"
       }
     },
     "viz_hero_tokyo": {
       "type": "windcompass.windcompass",
       "title": "Tokyo",
-      "description": "Weather only",
+      "description": "No dial",
       "options": {
         "dataMode": "live",
         "city": "Tokyo",
@@ -160,7 +239,7 @@
     "viz_hero_reykjavik": {
       "type": "windcompass.windcompass",
       "title": "Reykjavik",
-      "description": "Weather only",
+      "description": "No dial",
       "options": {
         "dataMode": "live",
         "city": "Reykjavik",
@@ -173,7 +252,7 @@
     "viz_hero_sydney": {
       "type": "windcompass.windcompass",
       "title": "Sydney",
-      "description": "Weather only",
+      "description": "No dial, m/s",
       "options": {
         "dataMode": "live",
         "city": "Sydney",
@@ -184,44 +263,303 @@
         "speedUnit": "ms"
       }
     },
+    "viz_attribution_card": {
+      "type": "splunk.rectangle",
+      "options": {
+        "fillColor": "#1e2433",
+        "fillOpacity": 1,
+        "strokeColor": "#6b8ac7",
+        "strokeOpacity": 0.6,
+        "strokeWidth": 1.5,
+        "rx": 14
+      }
+    },
     "viz_attribution": {
       "type": "splunk.markdown",
-      "title": "Attribution & third-party data",
-      "description": "Open-Meteo (open-meteo.com) — CC BY 4.0",
       "options": {
-        "markdown": "Weather and geocoding data in Live mode: [Weather data by Open-Meteo.com](https://open-meteo.com/), licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/). Full license terms: [open-meteo.com/en/license](https://open-meteo.com/en/license).\n\nWind Compass is a **free, non-commercial** app and is not affiliated with or endorsed by Open-Meteo. It calls Open-Meteo's **free API tier** directly from your browser — that tier is for non-commercial use only (rate-limited). Terms of use: [open-meteo.com/en/terms](https://open-meteo.com/en/terms). If you redistribute this dashboard as part of a commercial product or paid service, you are responsible for complying with Open-Meteo's terms, including subscribing to a commercial API plan if required. No Splunk data, credentials, or API keys are ever sent to Open-Meteo. See `THIRD_PARTY_NOTICES.md` in the app for full license details.",
-        "backgroundColor": "#171a21"
+        "markdown": "### Attribution and third-party data\n\nWeather and geocoding data in live mode comes from [Open-Meteo](https://open-meteo.com/) and is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — see their [license page](https://open-meteo.com/en/license).\n\nWind Compass is free, non-commercial, and not affiliated with Open-Meteo. It uses Open-Meteo's free API tier, which is rate-limited and for non-commercial use only ([terms of use](https://open-meteo.com/en/terms)). If you ship this as part of a commercial product, check whether you need a paid Open-Meteo plan. No Splunk data, credentials or API keys are ever sent to Open-Meteo. Full details are in `THIRD_PARTY_NOTICES.md`.",
+        "backgroundColor": "transparent",
+        "fontColor": "#d7e0ec",
+        "fontSize": "small"
+      }
+    },
+    "viz_dataflow_card": {
+      "type": "splunk.rectangle",
+      "options": {
+        "fillColor": "#1e293e",
+        "fillOpacity": 1,
+        "strokeColor": "#77abee",
+        "strokeOpacity": 0.7,
+        "strokeWidth": 1.5,
+        "rx": 14
+      }
+    },
+    "viz_dataflow": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "### Where live data comes from\n\n- Splunk serves the dashboard and the panel's code, then takes no further part: no search runs and nothing is indexed.\n- The **viewer's browser** asks Open-Meteo for the city's coordinates, then for current conditions, and draws the dial itself.\n- Requests come from each viewer's own browser, not from the Splunk server.\n- Only a city name and coordinates leave your network — no Splunk data, credentials or API keys.\n- Live readings are not stored, so they cannot be searched or alerted on. Use Search mode for that.",
+        "backgroundColor": "transparent",
+        "fontColor": "#e6ecf4",
+        "fontSize": "small"
       }
     }
   },
   "dataSources": {},
   "inputs": {},
-  "layout": {
-    "type": "absolute",
-    "options": {
-      "width": 1320,
-      "height": 2210,
-      "backgroundColor": "#12141a"
-    },
-    "globalInputs": [],
-    "structure": [
-      { "item": "viz_intro",            "type": "block", "position": { "x": 15,  "y": 20,   "w": 1290, "h": 110 } },
-      { "item": "viz_howitworks_live",   "type": "block", "position": { "x": 15,  "y": 150,  "w": 630,  "h": 260 } },
-      { "item": "viz_howitworks_search", "type": "block", "position": { "x": 675, "y": 150,  "w": 630,  "h": 260 } },
-      { "item": "viz_live_clean",       "type": "block", "position": { "x": 15,  "y": 430,  "w": 420, "h": 520 } },
-      { "item": "viz_live_marine",      "type": "block", "position": { "x": 450, "y": 430,  "w": 420, "h": 520 } },
-      { "item": "viz_live_instrument",  "type": "block", "position": { "x": 885, "y": 430,  "w": 420, "h": 520 } },
-      { "item": "viz_light_backdrop",          "type": "block", "position": { "x": 15,  "y": 970,  "w": 1290, "h": 520 } },
-      { "item": "viz_clean_light",              "type": "block", "position": { "x": 15,  "y": 970,  "w": 420, "h": 520 } },
-      { "item": "viz_marine_light",             "type": "block", "position": { "x": 450, "y": 970,  "w": 420, "h": 520 } },
-      { "item": "viz_instrument_light",         "type": "block", "position": { "x": 885, "y": 970,  "w": 420, "h": 520 } },
-      { "item": "viz_hero_tokyo",       "type": "block", "position": { "x": 15,  "y": 1510, "w": 420, "h": 400 } },
-      { "item": "viz_hero_reykjavik",   "type": "block", "position": { "x": 450, "y": 1510, "w": 420, "h": 400 } },
-      { "item": "viz_hero_sydney",      "type": "block", "position": { "x": 885, "y": 1510, "w": 420, "h": 400 } },
-      { "item": "viz_attribution",       "type": "block", "position": { "x": 15,  "y": 1930, "w": 1290, "h": 234 } }
-    ]
-  },
   "title": "Wind Compass — Demo",
-  "description": "Live-data wind & weather compass, zero setup. Live-mode data via Open-Meteo (open-meteo.com), CC BY 4.0 — see Attribution below."
+  "description": "A compass dial for wind direction and speed. Uses live weather for a city you name, or your own search results. Live data from Open-Meteo (CC BY 4.0).",
+  "layout": {
+    "globalInputs": [],
+    "tabs": {
+      "items": [
+        {
+          "layoutId": "layout_1",
+          "label": "Demo"
+        }
+      ]
+    },
+    "layoutDefinitions": {
+      "layout_1": {
+        "type": "absolute",
+        "options": {
+          "width": 1320,
+          "height": 2366,
+          "backgroundColor": "#181b25"
+        },
+        "structure": [
+          {
+            "item": "viz_intro_card",
+            "type": "block",
+            "position": {
+              "x": 15,
+              "y": 24,
+              "w": 1290,
+              "h": 150
+            }
+          },
+          {
+            "item": "viz_intro",
+            "type": "block",
+            "position": {
+              "x": 39,
+              "y": 44,
+              "w": 1242,
+              "h": 110
+            }
+          },
+          {
+            "item": "viz_live_card",
+            "type": "block",
+            "position": {
+              "x": 15,
+              "y": 198,
+              "w": 420,
+              "h": 300
+            }
+          },
+          {
+            "item": "viz_howitworks_live",
+            "type": "block",
+            "position": {
+              "x": 39,
+              "y": 218,
+              "w": 372,
+              "h": 260
+            }
+          },
+          {
+            "item": "viz_search_card",
+            "type": "block",
+            "position": {
+              "x": 450,
+              "y": 198,
+              "w": 420,
+              "h": 300
+            }
+          },
+          {
+            "item": "viz_howitworks_search",
+            "type": "block",
+            "position": {
+              "x": 474,
+              "y": 218,
+              "w": 372,
+              "h": 260
+            }
+          },
+          {
+            "item": "viz_dataflow_card",
+            "type": "block",
+            "position": {
+              "x": 885,
+              "y": 198,
+              "w": 420,
+              "h": 300
+            }
+          },
+          {
+            "item": "viz_dataflow",
+            "type": "block",
+            "position": {
+              "x": 909,
+              "y": 218,
+              "w": 372,
+              "h": 260
+            }
+          },
+          {
+            "item": "viz_label_dark",
+            "type": "block",
+            "position": {
+              "x": 19,
+              "y": 526,
+              "w": 700,
+              "h": 26
+            }
+          },
+          {
+            "item": "viz_live_clean",
+            "type": "block",
+            "position": {
+              "x": 15,
+              "y": 560,
+              "w": 420,
+              "h": 520
+            }
+          },
+          {
+            "item": "viz_live_marine",
+            "type": "block",
+            "position": {
+              "x": 450,
+              "y": 560,
+              "w": 420,
+              "h": 520
+            }
+          },
+          {
+            "item": "viz_live_instrument",
+            "type": "block",
+            "position": {
+              "x": 885,
+              "y": 560,
+              "w": 420,
+              "h": 520
+            }
+          },
+          {
+            "item": "viz_label_light",
+            "type": "block",
+            "position": {
+              "x": 19,
+              "y": 1108,
+              "w": 700,
+              "h": 26
+            }
+          },
+          {
+            "item": "viz_light_card",
+            "type": "block",
+            "position": {
+              "x": 15,
+              "y": 1142,
+              "w": 1290,
+              "h": 560
+            }
+          },
+          {
+            "item": "viz_clean_light",
+            "type": "block",
+            "position": {
+              "x": 15,
+              "y": 1162,
+              "w": 420,
+              "h": 520
+            }
+          },
+          {
+            "item": "viz_marine_light",
+            "type": "block",
+            "position": {
+              "x": 450,
+              "y": 1162,
+              "w": 420,
+              "h": 520
+            }
+          },
+          {
+            "item": "viz_instrument_light",
+            "type": "block",
+            "position": {
+              "x": 885,
+              "y": 1162,
+              "w": 420,
+              "h": 520
+            }
+          },
+          {
+            "item": "viz_label_hero",
+            "type": "block",
+            "position": {
+              "x": 19,
+              "y": 1730,
+              "w": 700,
+              "h": 26
+            }
+          },
+          {
+            "item": "viz_hero_tokyo",
+            "type": "block",
+            "position": {
+              "x": 15,
+              "y": 1764,
+              "w": 420,
+              "h": 400
+            }
+          },
+          {
+            "item": "viz_hero_reykjavik",
+            "type": "block",
+            "position": {
+              "x": 450,
+              "y": 1764,
+              "w": 420,
+              "h": 400
+            }
+          },
+          {
+            "item": "viz_hero_sydney",
+            "type": "block",
+            "position": {
+              "x": 885,
+              "y": 1764,
+              "w": 420,
+              "h": 400
+            }
+          },
+          {
+            "item": "viz_attribution_card",
+            "type": "block",
+            "position": {
+              "x": 15,
+              "y": 2192,
+              "w": 1290,
+              "h": 150
+            }
+          },
+          {
+            "item": "viz_attribution",
+            "type": "block",
+            "position": {
+              "x": 39,
+              "y": 2212,
+              "w": 1242,
+              "h": 110
+            }
+          }
+        ]
+      }
+    }
+  }
 }]]></definition>
 </dashboard>

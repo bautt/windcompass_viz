@@ -88,4 +88,47 @@ import { buildForecastParams, buildForecastUrl, fetchCurrentWeather } from './li
     }
 }
 
+// A successful reading is always cached, even when the caller did not opt into
+// reading from the cache. Scheduled polls rely on this: they force a fresh fetch
+// but still leave a warm entry behind for the next dashboard load.
+{
+    const originalFetch = globalThis.fetch;
+    const place = { lat: 11.111, lon: 22.222, label: 'Cacheville', countryCode: 'XX' };
+    let calls = 0;
+    globalThis.fetch = async () => {
+        calls += 1;
+        return {
+            ok: true,
+            json: async () => ({
+                current: { wind_direction_10m: 90, wind_speed_10m: calls, temperature_2m: 1 },
+            }),
+        };
+    };
+
+    try {
+        // Poll-style call: no cached reading may be served, so it fetches.
+        const first = await fetchCurrentWeather(place, { maxAgeMs: 0 });
+        assert.equal(first.windSpeed, 1);
+        assert.equal(calls, 1);
+
+        // Mount-style call inside the window: served from cache, no new request.
+        const second = await fetchCurrentWeather(place, { maxAgeMs: 60 * 1000 });
+        assert.equal(second.windSpeed, 1, 'should return the cached reading');
+        assert.equal(calls, 1, 'a cached reading must not trigger a request');
+
+        // Outside the window the cache is ignored. Age the entry past the window
+        // first: a write and read in the same millisecond would still be a hit.
+        await new Promise((resolve) => setTimeout(resolve, 12));
+        const third = await fetchCurrentWeather(place, { maxAgeMs: 10 });
+        assert.equal(third.windSpeed, 2);
+        assert.equal(calls, 2);
+
+        // maxAgeMs 0 always refetches, which is what the poll timer wants.
+        await fetchCurrentWeather(place, { maxAgeMs: 0 });
+        assert.equal(calls, 3);
+    } finally {
+        globalThis.fetch = originalFetch;
+    }
+}
+
 console.log('liveWeather.test.mjs: all assertions passed');

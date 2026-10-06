@@ -2,12 +2,18 @@
  * Open-Meteo geocoding (geocoding-api.open-meteo.com) — resolves a free-text
  * city (+ optional country) into coordinates. No API key required.
  *
- * Results are cached in memory for the lifetime of the iframe: the same
- * city/country pair resolves once, no matter how often the poll interval
- * fires or how many panels on a dashboard share it.
+ * Results are cached in memory for the lifetime of the page and persisted in
+ * browser storage for a month. A city's coordinates do not change, so there is
+ * no reason to spend a rate-limited request re-resolving them on every poll,
+ * every panel, or every dashboard reload — which is half of all the requests a
+ * live dashboard would otherwise make.
  */
+import { fetchJson } from './httpClient.js';
+import { cacheRead, cacheWrite } from './persistentCache.js';
 
 const GEOCODE_ENDPOINT = 'https://geocoding-api.open-meteo.com/v1/search';
+
+const GEOCODE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 
 const cache = new Map();
 
@@ -61,12 +67,16 @@ export async function geocodeCity(city, country, { signal } = {}) {
         return cache.get(key);
     }
 
-    const res = await fetch(buildGeocodeUrl(city, country), { signal });
-    if (!res.ok) {
-        throw new Error(`Geocoding lookup failed (HTTP ${res.status}).`);
+    const stored = cacheRead(`geo:${key}`, { maxAgeMs: GEOCODE_MAX_AGE_MS });
+    if (stored) {
+        cache.set(key, stored);
+        return stored;
     }
 
-    const json = await res.json();
+    const json = await fetchJson(buildGeocodeUrl(city, country), {
+        signal,
+        errorLabel: 'Geocoding lookup',
+    });
     const match = json?.results?.[0];
     if (!match) {
         const suffix = country ? `, ${country}` : '';
@@ -82,6 +92,7 @@ export async function geocodeCity(city, country, { signal } = {}) {
     };
 
     cache.set(key, place);
+    cacheWrite(`geo:${key}`, place);
     return place;
 }
 

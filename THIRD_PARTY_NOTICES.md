@@ -38,6 +38,12 @@ weather-condition data. This call does not occur when **Data mode** is set
 to **Search**. No API key is transmitted or stored — Open-Meteo's free tier
 requires none, and no Splunk data is ever sent to Open-Meteo.
 
+Only the configured city/country and the coordinates it resolves to leave the
+browser. To stay well inside Open-Meteo's rate limits, the resolved
+coordinates and the most recent reading are cached in the viewer's browser
+(`localStorage`, under keys prefixed `windcompass:`); nothing is written
+server-side, and clearing site data removes the cache.
+
 Wind Compass is not affiliated with or endorsed by Open-Meteo. Two separate
 sets of terms apply:
 
