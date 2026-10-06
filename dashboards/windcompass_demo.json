@@ -1,6 +1,6 @@
 {
   "title": "Wind Compass — Demo",
-  "description": "Self-contained showcase of the Clean, Marine and Instrument skins using sample data (makeresults). Works on any Splunk instance — no index required.",
+  "description": "Self-contained showcase of the Clean, Marine and Instrument skins using sample data (makeresults), each in dark and light/white variants. Works on any Splunk instance — no index required.",
   "visualizations": {
     "viz_clean": {
       "type": "windcompass.windcompass",
@@ -47,6 +47,58 @@
         "fieldCountry": "country",
         "fieldTemperature": "temperature_2m"
       }
+    },
+    "viz_clean_light": {
+      "type": "windcompass.windcompass",
+      "title": "Clean — Berlin (Light)",
+      "dataSources": { "primary": "ds_berlin" },
+      "options": {
+        "skin": "clean",
+        "themeOverride": "light",
+        "backgroundColor": "#ffffff",
+        "showTemperature": true,
+        "showLocation": true,
+        "fieldWindDirection": "wind_direction_10m",
+        "fieldWindSpeed": "wind_speed_10m",
+        "fieldLocation": "city",
+        "fieldCountry": "country",
+        "fieldTemperature": "temperature_2m"
+      }
+    },
+    "viz_marine_light": {
+      "type": "windcompass.windcompass",
+      "title": "Marine — Vilnius (Light)",
+      "dataSources": { "primary": "ds_vilnius" },
+      "options": {
+        "skin": "marine",
+        "themeOverride": "light",
+        "backgroundColor": "#ffffff",
+        "showTemperature": true,
+        "showLocation": true,
+        "fieldWindDirection": "wind_direction_10m",
+        "fieldWindSpeed": "wind_speed_10m",
+        "fieldLocation": "city",
+        "fieldCountry": "country",
+        "fieldTemperature": "temperature_2m"
+      }
+    },
+    "viz_instrument_light": {
+      "type": "windcompass.windcompass",
+      "title": "Instrument — San Francisco (Light)",
+      "dataSources": { "primary": "ds_sanfrancisco" },
+      "options": {
+        "skin": "instrument",
+        "themeOverride": "light",
+        "backgroundColor": "#ffffff",
+        "trueNeedleType": "instrument",
+        "showTemperature": true,
+        "showLocation": true,
+        "fieldWindDirection": "wind_direction_10m",
+        "fieldWindSpeed": "wind_speed_10m",
+        "fieldLocation": "city",
+        "fieldCountry": "country",
+        "fieldTemperature": "temperature_2m"
+      }
     }
   },
   "dataSources": {
@@ -77,14 +129,17 @@
     "type": "absolute",
     "options": {
       "width": 1320,
-      "height": 560,
+      "height": 1100,
       "backgroundColor": "#12141a"
     },
     "globalInputs": [],
     "structure": [
-      { "item": "viz_clean",      "type": "block", "position": { "x": 15,  "y": 20, "w": 420, "h": 520 } },
-      { "item": "viz_marine",     "type": "block", "position": { "x": 450, "y": 20, "w": 420, "h": 520 } },
-      { "item": "viz_instrument", "type": "block", "position": { "x": 885, "y": 20, "w": 420, "h": 520 } }
+      { "item": "viz_clean",            "type": "block", "position": { "x": 15,  "y": 20,  "w": 420, "h": 520 } },
+      { "item": "viz_marine",           "type": "block", "position": { "x": 450, "y": 20,  "w": 420, "h": 520 } },
+      { "item": "viz_instrument",       "type": "block", "position": { "x": 885, "y": 20,  "w": 420, "h": 520 } },
+      { "item": "viz_clean_light",      "type": "block", "position": { "x": 15,  "y": 560, "w": 420, "h": 520 } },
+      { "item": "viz_marine_light",     "type": "block", "position": { "x": 450, "y": 560, "w": 420, "h": 520 } },
+      { "item": "viz_instrument_light", "type": "block", "position": { "x": 885, "y": 560, "w": 420, "h": 520 } }
     ]
   }
 }
